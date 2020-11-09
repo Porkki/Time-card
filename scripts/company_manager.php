@@ -95,7 +95,7 @@
     } else {
         // Show employer only own bussiness so user cant create new accounts to company that he does not manage
         if ($_SESSION["class"] == "employer") {
-            // Get current user company id
+            // Get current user company idd
             if ($stmt = $con->prepare("SELECT user_company_id from users WHERE id = ?")) {
                 $stmt->bind_param("i", $param_id);
                 $param_id = trim($_SESSION["id"]);
