@@ -66,7 +66,7 @@
 
         // Close statement
         $stmt->close();
-    } if ($_SERVER["REQUEST_METHOD"] == "POST" && $_SESSION["class"] == "admin") {
+    } else if ($_SERVER["REQUEST_METHOD"] == "POST" && $_SESSION["class"] == "admin") {
         if (isset($_POST["company_name"], $_POST["ytunnus"], $_POST["company_address"], $_POST["company_postcode"], $_POST["company_area"])) {
             if ($stmt = $con->prepare("UPDATE company SET company_name=?, ytunnus=?, company_address=?, company_postcode=?, company_area=?, is_client=? WHERE id = ?")) {
                 $stmt->bind_param("sssssii", $company_name, $ytunnus, $company_address, $company_postcode, $company_area, $is_client, $id);
