@@ -38,6 +38,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $hours = $totaltimeinterval->h;
         $hours = $hours + ($totaltimeinterval->days*24);
         $total_time = $hours . ":" . $totaltimeinterval->format("%I:%S");
+        // Add breaktimedt back to endtime parameter before inserting to mysql
+        $endtimedt->add($breaktimedt);
 
         // Set up params
         $user_id_param = $_SESSION["id"];
