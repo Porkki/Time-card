@@ -104,7 +104,7 @@ $(document).ready(function() {
                 .append($("<td>").text(value.break_time))
                 .append($("<td>").attr("id","total_time").html("<span>" + value.total_time + "</span>"))
                 .append($("<td>")
-                    .append($("<a href='updatecompany.php?id=" + value.id + "' title='Muokkaa yritystä' data-toggle='tooltip'><i class='fas fa-edit pr-2 text-success'></i></a>"))
+                    .append($("<a href='modifyworkday.php?id=" + value.id + "' title='Muokkaa työpäivää' data-toggle='tooltip'><i class='fas fa-edit pr-2 text-success'></i></a>"))
                     .append($("<a href='#' class='open-removeconfirm' title='Poista työpäivä' data-toggle='modal' data-target='#removeConfirm' data-name='" + value.date + "' data-id='" + value.id + "'><i class='fas fa-trash text-danger'></i></a>"))
                 )
             );
