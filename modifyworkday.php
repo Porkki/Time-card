@@ -56,9 +56,19 @@ date_default_timezone_set('Europe/Helsinki');
                             </div>
                             <div class="form-group col">
                                 <label for="breaktime">Tauko</label>
-                                <input type="time" class="form-control" name="breaktime">
+                                <input type="time" class="form-control" name="breaktime" aria-describedby="breaktimeHelpBlock">
+                                <small id="breaktimeHelpBlock" class="form-text text-muted">
+                                hh:mm
+                                </small>
                                 <input type="hidden" class="form-control" name="id">
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="explanation">Selite</label>
+                            <textarea class="form-control" name="explanation" rows="3" maxlength="250" aria-describedby="explanationHelpBlock"></textarea>
+                            <small id="explanationHelpBlock" class="form-text text-muted">
+                            Max 250 kirjainta.
+                            </small>
                         </div>
                         <button type="submit" class="btn btn-success">Muokkaa työpäivää</button>
                     </form>
@@ -126,6 +136,7 @@ $(document).ready(function() {
         document.getElementsByName("endtime")[0].value = data[0].custom_end_time;
         document.getElementsByName("breaktime")[0].value = data[0].break_time;
         document.getElementsByName("id")[0].value = data[0].id;
+        document.getElementsByName("explanation")[0].value = data[0].explanation;
     }, "json");
 
     // Form handling

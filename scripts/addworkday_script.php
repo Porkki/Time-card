@@ -20,8 +20,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         echo json_encode($workdayObj);
     }
     
-    if ($stmt = $con->prepare("INSERT INTO workday (user_id, date, start_time, end_time, break_time, total_time) VALUES (?, ?, ?, ?, ?, ?)")) {
-        $stmt->bind_param("isssss", $user_id_param, $date_param, $starttime_param, $endtime_param, $breaktime_param, $totaltime_param);
+    if ($stmt = $con->prepare("INSERT INTO workday (user_id, date, start_time, end_time, break_time, total_time, explanation) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+        $stmt->bind_param("issssss", $user_id_param, $date_param, $starttime_param, $endtime_param, $breaktime_param, $totaltime_param, $explanation_param);
         $starttime = trim($_POST["starttime"]);
         $starttimedt = new DateTime($starttime);
         $endtime = trim($_POST["endtime"]);
@@ -48,6 +48,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $endtime_param = $endtimedt->format("Y-m-d H:i:s");
         $breaktime_param = $breaktime;
         $totaltime_param = $total_time;
+        $explanation_param = trim($_POST["explanation"]);
 
         $stmt->execute();
         $stmt->close();

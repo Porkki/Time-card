@@ -59,6 +59,13 @@ date_default_timezone_set('Europe/Helsinki');
                                 <input type="time" class="form-control" name="breaktime">
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="explanation">Selite</label>
+                            <textarea class="form-control" name="explanation" rows="3" maxlength="250" aria-describedby="explanationHelpBlock"></textarea>
+                            <small id="explanationHelpBlock" class="form-text text-muted">
+                            Max 250 kirjainta.
+                            </small>
+                        </div>
                         <button type="submit" class="btn btn-success">Lisää työpäivä</button>
                     </form>
                 </div>

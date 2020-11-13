@@ -131,8 +131,8 @@
     } else if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //TODO: DO CHECK IF USER IS ALLOWED TO MODIFY WORKDAY
         if (isset($_POST["date"], $_POST["starttime"], $_POST["endtime"])) {
-            if ($stmt = $con->prepare("UPDATE workday SET date=?, start_time=?, end_time=?, break_time=?, total_time=? WHERE id = ?")) {
-                $stmt->bind_param("sssssi", $date_param, $starttime_param, $endtime_param, $breaktime_param, $totaltime_param, $id);
+            if ($stmt = $con->prepare("UPDATE workday SET date=?, start_time=?, end_time=?, break_time=?, total_time=?, explanation=? WHERE id = ?")) {
+                $stmt->bind_param("ssssssi", $date_param, $starttime_param, $endtime_param, $breaktime_param, $totaltime_param, $explanation_param, $id);
                 
                 //Set parameters
                 $starttime = trim($_POST["starttime"]);
@@ -161,6 +161,7 @@
                 $breaktime_param = $breaktime;
                 $totaltime_param = $total_time;
                 $id = trim($_POST["id"]);
+                $explanation_param = trim($_POST["explanation"]);
 
                 $stmt->execute();
                 $workdayObj->workday = $date_param;
