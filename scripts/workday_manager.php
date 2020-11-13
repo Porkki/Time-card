@@ -79,7 +79,9 @@
                         // See if user ids match and echo workday data
                         if ($_SESSION["id"] == $workdayuseridINT) {
                             // Generating specific DATE_FORMAT straigt from mysql for HTML datetime-local.value format
-                            if ($stmt2->prepare("SELECT *, DATE_FORMAT(start_time, '%Y-%m-%dT%H:%i') AS custom_start_time, DATE_FORMAT(end_time, '%Y-%m-%dT%H:%i') AS custom_end_time FROM workday WHERE id = ?")) {
+                            if ($stmt2->prepare("SELECT *, DATE_FORMAT(start_time, '%Y-%m-%dT%H:%i') AS custom_start_time, 
+                            DATE_FORMAT(end_time, '%Y-%m-%dT%H:%i') AS custom_end_time
+                            FROM workday WHERE id = ?")) {
                                 $stmt2->bind_param("i", $viewid);
                                 if ($stmt2->execute()) {
                                     $result2 = $stmt2->get_result();
@@ -174,7 +176,12 @@
         }
     } else {
         //Send all workday data, todo move this to user id get and put here admin print every workday
-        if ($stmt = $con->prepare("SELECT * from workday WHERE user_id = ? ORDER BY date")) {
+        if ($stmt = $con->prepare("SELECT *,
+        DATE_FORMAT(start_time, '%e.%c.%y %H:%i') AS custom_start_time,
+        DATE_FORMAT(end_time, '%e.%c.%y %H:%i') AS custom_end_time,
+        DATE_FORMAT(break_time, '%H:%i') AS custom_break_time,
+        DATE_FORMAT(date, '%d.%m.%Y') AS custom_dateformat
+        from workday WHERE user_id = ? ORDER BY date")) {
             $stmt->bind_param("i", $param_id);
             $param_id = trim($_SESSION["id"]);
             if ($stmt->execute()) {

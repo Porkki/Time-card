@@ -47,10 +47,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         <thead>
                             <tr>
                                 <th scope="col">Päivämäärä</th>
-                                <th scope="col">Aloitus</th>
-                                <th scope="col">Lopetus</th>
-                                <th scope="col">Tauko</th>
+                                <th scope="col">Aika</th>
                                 <th scope="col">Yhteensä</th>
+                                <th scope="col">Selite</th>
                                 <th scope="col">Toiminto</th>
                             </tr>
                         </thead>
@@ -94,15 +93,19 @@ $(document).ready(function() {
     // Target element
     var table = $("#workdays > tbody:last-child");
     // Populate table with list of companies
-    // TODO: Make dates to show as local date format, not mysql format.
     $.get("scripts/workday_manager.php", function(data) {
         $.each(data, function(key, value) {
             table.append($("<tr>")
-                .append($("<td>").text(value.date))
-                .append($("<td>").text(value.start_time))
-                .append($("<td>").text(value.end_time))
-                .append($("<td>").text(value.break_time))
+                // Set id value to original date value for table sorting between dates
+                .append($("<td>").attr("id",value.date).text(value.custom_dateformat))
+                .append($("<td style='width:200px'>")
+                    .html($("<b>Aloitus: </b>" + value.custom_start_time + "<br>" +
+                    "<b>Lopetus: </b>" + value.custom_end_time + "<br>" +
+                    "<b>Tauko: </b> " + value.custom_break_time))
+                )
                 .append($("<td>").attr("id","total_time").html("<span>" + value.total_time + "</span>"))
+                .append($("<td>").text(value.explanation))
+                //TODO: Align to center
                 .append($("<td>")
                     .append($("<a href='modifyworkday.php?id=" + value.id + "' title='Muokkaa työpäivää' data-toggle='tooltip'><i class='fas fa-edit pr-2 text-success'></i></a>"))
                     .append($("<a href='#' class='open-removeconfirm' title='Poista työpäivä' data-toggle='modal' data-target='#removeConfirm' data-name='" + value.date + "' data-id='" + value.id + "'><i class='fas fa-trash text-danger'></i></a>"))
@@ -138,18 +141,18 @@ function filterTable() {
     var fromdate = new Date(from).getTime();
     var todate = new Date(to).getTime();
 
+    // Hide every tr which is not between startdate and enddate
     $("#workdays tr").show().filter(function() {
-        var curdate = new Date($(this).find("td").first().text()).getTime();
+        // Get original date value from date section id attribution and not text, because JS Date object cant parse dd-mm-yyyy format.
+        var curdate = new Date($(this).find("td").first().attr("id")).getTime();
         return curdate < fromdate || curdate > todate;
     }).hide();
 
-    // Calculate hours
-    var counter = 0;
+    // Calculate total hours
     var hours = 0;
     var mins = 0;
     var seconds = 0;
     $("#workdays > tbody tr:visible").each(function() {
-        counter++;
         var content = $(this).find("span").text();
 
         var array = content.split(":")
