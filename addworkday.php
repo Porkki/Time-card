@@ -43,16 +43,16 @@ date_default_timezone_set('Europe/Helsinki');
                     <form id="createnewworkday">
                         <div class="form-group">
                             <label for="date">Päivämäärä</label>
-                            <input type="date" class="form-control" name="date" value="<?php echo date("Y-m-d"); ?>">
+                            <input type="date" class="form-control" name="date" id="date" value="<?php echo date("Y-m-d"); ?>">
                         </div>
                         <div class="form-row">
                             <div class="form-group col">
                                 <label for="starttime">Aloitusaika</label>
-                                <input type="datetime-local" class="form-control" name="starttime" value="<?php echo date("Y-m-d") . "T00:00"; ?>">
+                                <input type="datetime-local" class="form-control" name="starttime" id="starttime" value="<?php echo date("Y-m-d") . "T00:00"; ?>">
                             </div>
                             <div class="form-group col">
                                 <label for="endtime">Lopetusaika</label>
-                                <input type="datetime-local" class="form-control" name="endtime" value="<?php echo date("Y-m-d\TH:i"); ?>">
+                                <input type="datetime-local" class="form-control" name="endtime" id="endtime" value="<?php echo date("Y-m-d\TH:i"); ?>">
                             </div>
                             <div class="form-group col">
                                 <label for="break">Tauko</label>
@@ -119,6 +119,13 @@ date_default_timezone_set('Europe/Helsinki');
 
 <script>
 $(document).ready(function() {
+    // Modify startdate & enddate according to date input so it automatically enter same date on both fields
+    // TODO pidä alkuperäinen aika alku ja lopetusajassa tallessa kun pvm vaihtuu date kentässä!
+    $("#date").change(function() {
+        var date = $("#date").val();
+        $("#starttime").val(date + "T00:00");
+        $("#endtime").val(date + "T00:00");
+    });
     $( "#createnewworkday" ).submit(function( event ) {
         // Put form data to variable
         var formdata = $( this ).serialize();
