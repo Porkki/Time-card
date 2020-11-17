@@ -21,6 +21,11 @@ if ($_SESSION["class"] == "employee") {
                 <li class="nav-item">
                     <a class="nav-link <?php if ($path[2] == "workday.php") {echo('active');} else {echo('');}?>" href="workday.php">Työpäivät</a>
                 </li>
+                <?php if ($_SESSION["class"] == "admin" || $_SESSION["class"] == "employer") { ?>
+                <li class="nav-item">
+                    <a class="nav-link <?php if ($path[2] == "workday_employer.php") {echo('active');} else {echo('');}?>" href="workday_employer.php">Työntekijän työpäivät</a>
+                </li>
+                <?php } ?>
                 <li class="nav-item">
                     <a class="nav-link <?php if ($path[2] == "addworkday.php") {echo('active');} else {echo('');}?>" href="addworkday.php">Lisää työpäivä</a>
                 </li>
