@@ -10,13 +10,36 @@
 ?>
 
 <?php
-
     require_once "../config.php";
     // Declaring empty variables
     $return_arr = Array();
     $workdayObj = new stdClass();
-
-    if (isset($_GET["remove"]) && !empty(trim($_GET["remove"])) && is_numeric(trim($_GET["remove"]))) {
+    // Get list of user's workdays from userid
+    if (isset($_GET["userid"]) && !empty(trim($_GET["userid"])) && is_numeric(trim($_GET["userid"]))) {
+        if ($_SESSION["class"] == "employer" || $_SESSION["class"] == "admin") {
+            //TODO: check if employer is userid employer
+            $userid = trim($_GET["userid"]);
+            if ($stmt = $con->prepare("SELECT *,
+            DATE_FORMAT(start_time, '%e.%c.%y %H:%i') AS custom_start_time,
+            DATE_FORMAT(end_time, '%e.%c.%y %H:%i') AS custom_end_time,
+            DATE_FORMAT(break_time, '%H:%i') AS custom_break_time,
+            DATE_FORMAT(date, '%d.%m.%Y') AS custom_dateformat
+            from workday WHERE user_id = ? ORDER BY date")) {
+                $stmt->bind_param("i", $param_id);
+                $param_id = $userid;
+                if ($stmt->execute()) {
+                    $result = $stmt->get_result();
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+                            array_push($return_arr,$row);
+                        }
+                        echo json_encode($return_arr);
+                    }
+                }
+                $stmt->close();
+            }
+        } 
+    } else if (isset($_GET["remove"]) && !empty(trim($_GET["remove"])) && is_numeric(trim($_GET["remove"]))) {
         $removeid = trim($_GET["remove"]);
         if ($_SESSION["class"] == "employee") {
             // Check if workday belongs to user who is trying to remove it
