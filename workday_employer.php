@@ -113,13 +113,15 @@ $(document).ready(function() {
         var userid = $(this).val();
         $.get("scripts/workday_manager.php?userid=" + userid, function(data) {
             $.each(data, function(key, value) {
+                // There was bug with .html attribute which did not show complete string but left parts out so we changed it to .prop
+                var timestring = ("<b>Aloitus: </b>" + value.custom_start_time + "<br>" +
+                            "<b>Lopetus: </b>" + value.custom_end_time + "<br>" +
+                            "<b>Tauko: </b> " + value.custom_break_time);
                 table.append($("<tr>")
                     // Set id value to original date value for table sorting between dates
                     .append($("<td>").attr("id",value.date).text(value.custom_dateformat))
                     .append($("<td style='width:200px'>")
-                        .html($("<b>Aloitus: </b>" + value.custom_start_time + "<br>" +
-                        "<b>Lopetus: </b>" + value.custom_end_time + "<br>" +
-                        "<b>Tauko: </b> " + value.custom_break_time))
+                        .prop("innerHTML", timestring)
                     )
                     .append($("<td>").attr("id","total_time").html("<span>" + value.total_time + "</span>"))
                     .append($("<td>").text(value.explanation))
