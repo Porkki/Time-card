@@ -17,7 +17,12 @@
     // Get list of user's workdays from userid
     if (isset($_GET["userid"]) && !empty(trim($_GET["userid"])) && is_numeric(trim($_GET["userid"]))) {
         if ($_SESSION["class"] == "employer" || $_SESSION["class"] == "admin") {
-            //TODO: check if employer is userid employer
+            /*
+            * No need to check here if employer is actually user employer, because when modifyworkday.php calls viewid method from this file
+            * it handles the checking of does the user has rights to modify workday which he tries to modify.
+            * Example: Employer can modify his employees workdays and hes own but not other users
+            * Employee can only modify his own workdays and admin can do everything of course
+            */
             $userid = trim($_GET["userid"]);
             if ($stmt = $con->prepare("SELECT *,
             DATE_FORMAT(start_time, '%e.%c.%y %H:%i') AS custom_start_time,
@@ -38,7 +43,10 @@
                 }
                 $stmt->close();
             }
-        } 
+        } else {
+            $workdayObj->error = "Sinulla ei ole oikeuksia suorittaa kyseistä toimenpidettä.";
+            echo json_encode($workdayObj);
+        }
     } else if (isset($_GET["remove"]) && !empty(trim($_GET["remove"])) && is_numeric(trim($_GET["remove"]))) {
         $removeid = trim($_GET["remove"]);
         if ($_SESSION["class"] == "employee") {
@@ -102,7 +110,7 @@
                         // See if user ids match and echo workday data
                         if ($_SESSION["id"] == $workdayuseridINT) {
                             // Generating specific DATE_FORMAT straigt from mysql for HTML datetime-local.value format
-                            if ($stmt2->prepare("SELECT *, DATE_FORMAT(start_time, '%Y-%m-%dT%H:%i') AS custom_start_time, 
+                            if ($stmt2 = $con->prepare("SELECT *, DATE_FORMAT(start_time, '%Y-%m-%dT%H:%i') AS custom_start_time, 
                             DATE_FORMAT(end_time, '%Y-%m-%dT%H:%i') AS custom_end_time
                             FROM workday WHERE id = ?")) {
                                 $stmt2->bind_param("i", $viewid);
@@ -131,9 +139,68 @@
                 $stmt->close();
             }
         } else if ($_SESSION["class"] == "employer") {
-            //TODO EMPLOYER IMPLEMENTION
+            // Get employers' company id
+            if ($stmt = $con->prepare("SELECT user_company_id from users WHERE id = ?")) {
+                $stmt->bind_param("i", $param_id);
+                $param_id = trim($_SESSION["id"]);
+                if ($stmt->execute()) {
+                    $result = $stmt->get_result();
+                    if ($result->num_rows == 1) {
+                        $user_company_id = $result->fetch_array(MYSQLI_ASSOC);
+                        $employer_companyid = $user_company_id["user_company_id"];
+                        // Get user_id from workday which we are tring to modify to see if we have rights to do it
+                        if ($stmt2 = $con->prepare("SELECT user_id from workday where id = ?")) {
+                            $stmt2->bind_param("i", $viewid);
+                            if ($stmt2->execute()) {
+                                $result2 = $stmt2->get_result();
+                                if ($result2->num_rows == 1) {
+                                    $workdaydata_array = $result2->fetch_array(MYSQLI_ASSOC);
+                                    $workday_owner_userid = $workdaydata_array["user_id"];
+                                    // Get user company id from users table to compare result
+                                    if ($stmt3 = $con->prepare("SELECT user_company_id from users where id = ?")) {
+                                        $stmt3->bind_param("i", $workday_owner_userid);
+                                        if ($stmt3->execute()) {
+                                            $result3 = $stmt3->get_result();
+                                            if ($result3->num_rows == 1) {
+                                                $userdata_array = $result3->fetch_array(MYSQLI_ASSOC);
+                                                if ($userdata_array["user_company_id"] == $employer_companyid) {
+                                                    // They have same company id
+                                                    if ($stmt4 = $con->prepare("SELECT *, DATE_FORMAT(start_time, '%Y-%m-%dT%H:%i') AS custom_start_time, DATE_FORMAT(end_time, '%Y-%m-%dT%H:%i') AS custom_end_time FROM workday WHERE id = ?")) {
+                                                        $stmt4->bind_param("i", $viewid);
+                                                        if($stmt4->execute()) {
+                                                            $result4 = $stmt4->get_result();
+                                                            if ($result4->num_rows == 1) {
+                                                                while ($row = $result4->fetch_array(MYSQLI_ASSOC)) {
+                                                                    array_push($return_arr,$row);
+                                                                }
+                                                                echo json_encode($return_arr);
+                                                            } else {
+                                                                // No workday found
+                                                            }
+                                                        }
+                                                        $stmt4->close();
+                                                    }
+                                                } else {
+                                                    $workdayObj->error = "Sinulla ei ole oikeuksia muokata kyseistä työpäivää.";
+                                                    echo json_encode($workdayObj);
+                                                }
+                                            }
+                                        }
+                                        $stmt3->close();
+                                    }
+                                } else {
+                                    // User not found
+                                    header("location: ../modifyuser.php?result=unsuccesful");
+                                }
+                            }
+                            $stmt2->close();
+                        }
+                    }
+                }
+                $stmt->close();
+            }
         } else if ($_SESSION["class"] == "admin") {
-            // Generating specific DATE_FORMAT straigt from mysql for HTML datetime-local.value format
+            // Generating specific DATE_FORMAT from mysql for HTML datetime-local.value format
             if ($stmt = $con->prepare("SELECT *, DATE_FORMAT(start_time, '%Y-%m-%dT%H:%i') AS custom_start_time, DATE_FORMAT(end_time, '%Y-%m-%dT%H:%i') AS custom_end_time FROM workday WHERE id = ?")) {
                 $stmt->bind_param("i", $viewid);
                 if($stmt->execute()) {

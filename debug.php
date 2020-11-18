@@ -17,9 +17,12 @@
                             <script src="scripts/jquery-3.5.1.min.js"></script>
 <script>
     $(document).ready(function() {
-        $("#date").change(function() {
-            var date = $("#date").val();
-            $("#starttime").val(date + "T00:00");
-        });
+        var custom_start_time = "start";
+        var custom_end_time = "end";
+        var break_time = "break";
+        var string = ("<b>Aloitus: </b>" + custom_start_time + "<br>" +
+                        "<b>Lopetus: </b>" + custom_end_time + "<br>" +
+                        "<b>Tauko: </b> " + break_time + "mi");
+        alert(string);
     });
 </script>
