@@ -119,12 +119,15 @@ date_default_timezone_set('Europe/Helsinki');
 
 <script>
 $(document).ready(function() {
-    // Modify startdate & enddate according to date input so it automatically enter same date on both fields
-    // TODO pidä alkuperäinen aika alku ja lopetusajassa tallessa kun pvm vaihtuu date kentässä!
+    // Modify startdate & enddate according to date input so it automatically enter same date on both fields but keeps time
     $("#date").change(function() {
         var date = $("#date").val();
-        $("#starttime").val(date + "T00:00");
-        $("#endtime").val(date + "T00:00");
+
+        var starttime = new Date($("#starttime").val());
+        var endtime = new Date($("#endtime").val());
+        // https://stackoverflow.com/questions/18889548/javascript-change-gethours-to-2-digit
+        $("#starttime").val(date + "T" + ("0" + starttime.getHours()).slice(-2) + ":" + ("0" + starttime.getMinutes()).slice(-2));
+        $("#endtime").val(date + "T" + ("0" + endtime.getHours()).slice(-2) + ":" + ("0" + endtime.getMinutes()).slice(-2));
     });
     $( "#createnewworkday" ).submit(function( event ) {
         // Put form data to variable
