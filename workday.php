@@ -95,13 +95,14 @@ $(document).ready(function() {
     // Populate table with list of companies
     $.get("scripts/workday_manager.php", function(data) {
         $.each(data, function(key, value) {
+            var timestring = ("<b>Aloitus: </b>" + value.custom_start_time + "<br>" +
+                            "<b>Lopetus: </b>" + value.custom_end_time + "<br>" +
+                            "<b>Tauko: </b> " + value.custom_break_time);
             table.append($("<tr>")
                 // Set id value to original date value for table sorting between dates
                 .append($("<td>").attr("id",value.date).text(value.custom_dateformat))
                 .append($("<td style='width:200px'>")
-                    .html($("<b>Aloitus: </b>" + value.custom_start_time + "<br>" +
-                    "<b>Lopetus: </b>" + value.custom_end_time + "<br>" +
-                    "<b>Tauko: </b> " + value.custom_break_time))
+                    .prop("innerHTML", timestring)
                 )
                 .append($("<td>").attr("id","total_time").html("<span>" + value.total_time + "</span>"))
                 .append($("<td>").text(value.explanation))
