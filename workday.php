@@ -92,19 +92,26 @@ $(document).ready(function() {
     // Get companies to table
     // Target element
     var table = $("#workdays > tbody:last-child");
+
     // Populate table with list of companies
     $.get("scripts/workday_manager.php", function(data) {
         $.each(data, function(key, value) {
-            var timestring = ("<b>Aloitus: </b>" + value.custom_start_time + "<br>" +
-                            "<b>Lopetus: </b>" + value.custom_end_time + "<br>" +
-                            "<b>Tauko: </b> " + value.custom_break_time);
+            // Weekday array
+            let weekdayShortFormat = ["Su", "Ma", "Ti", "Ke", "To", "Pe", "La", "Su"];
+            let weekdayLongFormat = ["Sunnuntai", "Maanantai", "Tiistai", "Keskiviikko", "Torstai", "Perjantai", "Lauantai", "Sunnuntai"];
+            let d = new Date(value.date);
+
+            let timeString = ("<b>Aloitus: </b>" + value.custom_start_time + "<br>" +
+                            "<b>Lopetus: </b>" + value.custom_end_time +
+                            "<span class='breakTime'><br><b>Tauko: </b><span class='breakTimeValue'>" + value.custom_break_time + "</span></span>");
+            let dateString = ("<b>" + weekdayLongFormat[d.getDay()] + "</b><br>" + value.custom_dateformat);
             table.append($("<tr>")
                 // Set id value to original date value for table sorting between dates
-                .append($("<td>").attr("id",value.date).text(value.custom_dateformat))
+                .append($("<td>").attr("id",value.date).prop("innerHTML", dateString))
                 .append($("<td style='width:200px'>")
-                    .prop("innerHTML", timestring)
+                    .prop("innerHTML", timeString)
                 )
-                .append($("<td>").attr("id","total_time").html("<span>" + value.total_time + "</span>"))
+                .append($("<td>").html("<span id='totalTime'>" + value.total_time + "</span>"))
                 .append($("<td>").text(value.explanation))
                 //TODO: Align to center
                 .append($("<td>")
@@ -136,13 +143,24 @@ $(document).ready(function() {
 });
 
 function filterTable() {
+    // Hide every empty break
+    $(".breakTime").show().filter(function() {
+        var allBreakTimeValues = $(".breakTimeValue");
+        var breakTimeContent = $(this).find(allBreakTimeValues).first().text();
+        var breakTimeArray = breakTimeContent.split(":");
+        if (breakTimeArray[0] == "00" && breakTimeArray[1] == "00") {
+            return true;
+        } else {
+            return false;
+        }
+    }).hide();
+
+    // Hide every tr which is not between startdate and enddate
     var from = document.getElementById("startdate").value;
     var to = document.getElementById("enddate").value;
 
     var fromdate = new Date(from).getTime();
     var todate = new Date(to).getTime();
-
-    // Hide every tr which is not between startdate and enddate
     $("#workdays tr").show().filter(function() {
         // Get original date value from date section id attribution and not text, because JS Date object cant parse dd-mm-yyyy format.
         var curdate = new Date($(this).find("td").first().attr("id")).getTime();
@@ -154,11 +172,11 @@ function filterTable() {
     var mins = 0;
     var seconds = 0;
     $("#workdays > tbody tr:visible").each(function() {
-        var content = $(this).find("span").text();
+        var totalTimeContent = $(this).find("#totalTime").text();
 
-        var array = content.split(":")
-        seconds += parseInt(array[0])*60*60;
-        seconds += parseInt(array[1])*60;
+        var totalTimeArray = totalTimeContent.split(":")
+        seconds += parseInt(totalTimeArray[0])*60*60;
+        seconds += parseInt(totalTimeArray[1])*60;
     });
     $("#hours").text(secondsToHms(seconds));
 }
