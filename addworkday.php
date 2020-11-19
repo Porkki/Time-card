@@ -122,7 +122,10 @@ $(document).ready(function() {
     // Modify startdate & enddate according to date input so it automatically enter same date on both fields but keeps time
     $("#date").change(function() {
         var date = $("#date").val();
-
+        // If date is empty then do nothing because #date value is invalid
+        if (date == "") {
+            return;
+        }
         var starttime = new Date($("#starttime").val());
         var endtime = new Date($("#endtime").val());
         // https://stackoverflow.com/questions/18889548/javascript-change-gethours-to-2-digit
