@@ -111,39 +111,7 @@
         <script src="scripts/jquery-3.5.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <!-- Page function scripts -->
+        <script src="scripts/js/addcompany.js"></script>
     </body>
 </html>
-
-<script>
-$(document).ready(function() {
-    $( "#target" ).submit(function( event ) {
-        // Put form data to variable
-        var formdata = $( this ).serialize();
-        // Disable form page refresh
-        event.preventDefault();
-
-        $.ajax({
-            method: "POST",
-            url: "addcompany_script.php",
-            dataType: "json",
-            data: formdata
-        })
-            .done(function( data ) {
-                var companyname = data.companyname;
-                var error = data.error;
-                if (companyname) {
-                    document.getElementsByName("company_name")[0].value = "";
-                    document.getElementsByName("ytunnus")[0].value = "";
-                    document.getElementsByName("company_address")[0].value = "";
-                    document.getElementsByName("company_postcode")[0].value = "";
-                    document.getElementsByName("company_area")[0].value = "";
-                    $('#doneModal').modal('show');
-                } 
-                if (error) {
-                    document.getElementById("errormessage").textContent=error;
-                    $('#unsuccessfulModal').modal('show');
-                }
-            })
-    });
-});
-</script>

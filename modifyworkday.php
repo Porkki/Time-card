@@ -120,52 +120,6 @@ date_default_timezone_set('Europe/Helsinki');
         <script src="scripts/jquery-3.5.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="scripts/js/modifyworkday.js"></script>
     </body>
 </html>
-
-<script>
-$(document).ready(function() {
-    // Get id parameter from url to send to ajax request
-    var url = new URL(document.URL);
-    var search_params = url.searchParams;
-    var id = search_params.get("id");
-    // Send get request to script and then assign values to the form
-    $.get("scripts/workday_manager.php?viewid=" + id, function(data) {
-        document.getElementsByName("date")[0].value = data[0].date;
-        document.getElementsByName("starttime")[0].value = data[0].custom_start_time;
-        document.getElementsByName("endtime")[0].value = data[0].custom_end_time;
-        document.getElementsByName("breaktime")[0].value = data[0].break_time;
-        document.getElementsByName("id")[0].value = data[0].id;
-        document.getElementsByName("explanation")[0].value = data[0].explanation;
-    }, "json");
-
-    // Form handling
-    $( "#modifyworkday" ).submit(function( event ) {
-        // Put form data to variable
-        var formdata = $( this ).serialize();
-        // Disable form page refresh
-        event.preventDefault();
-
-        $.ajax({
-            method: "POST",
-            url: "scripts/workday_manager.php",
-            dataType: "json",
-            data: formdata
-        })
-            .done(function( data ) {
-                var workday = data.workday;
-                var error = data.error;
-                if (workday) {
-                    $('#doneModal').modal('show');
-                    setTimeout(function() {
-                        window.location.href= "workday.php";
-                    }, 2000);
-                } 
-                if (error) {
-                    document.getElementById("errormessage").textContent=error;
-                    $('#unsuccessfulModal').modal('show');
-                }
-            })
-    });
-});
-</script>
