@@ -27,6 +27,8 @@
             if ($stmt = $con->prepare("SELECT *,
             DATE_FORMAT(start_time, '%e.%c.%y %H:%i') AS custom_start_time,
             DATE_FORMAT(end_time, '%e.%c.%y %H:%i') AS custom_end_time,
+            DATE_FORMAT(created_time, '%e.%c.%y %H:%i') AS custom_created_time,
+            DATE_FORMAT(modified_time, '%e.%c.%y %H:%i') AS custom_modified_time,
             DATE_FORMAT(break_time, '%H:%i') AS custom_break_time,
             DATE_FORMAT(date, '%d.%m.%Y') AS custom_dateformat
             from workday WHERE user_id = ? ORDER BY date")) {
@@ -221,8 +223,8 @@
     } else if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //TODO: DO CHECK IF USER IS ALLOWED TO MODIFY WORKDAY
         if (isset($_POST["date"], $_POST["starttime"], $_POST["endtime"])) {
-            if ($stmt = $con->prepare("UPDATE workday SET date=?, start_time=?, end_time=?, break_time=?, total_time=?, explanation=? WHERE id = ?")) {
-                $stmt->bind_param("ssssssi", $date_param, $starttime_param, $endtime_param, $breaktime_param, $totaltime_param, $explanation_param, $id);
+            if ($stmt = $con->prepare("UPDATE workday SET date=?, start_time=?, end_time=?, break_time=?, total_time=?, explanation=?, modified_user_id=? WHERE id = ?")) {
+                $stmt->bind_param("ssssssii", $date_param, $starttime_param, $endtime_param, $breaktime_param, $totaltime_param, $explanation_param, $modified_uid_param, $id);
                 
                 //Set parameters
                 $starttime = trim($_POST["starttime"]);
@@ -250,9 +252,10 @@
                 $endtime_param = $endtimedt->format("Y-m-d H:i:s");
                 $breaktime_param = $breaktime;
                 $totaltime_param = $total_time;
-                $id = trim($_POST["id"]);
                 $explanation_param = trim($_POST["explanation"]);
-
+                $modified_uid_param = trim($_SESSION["id"]);
+                $id = trim($_POST["id"]);
+                
                 $stmt->execute();
                 $workdayObj->workday = $date_param;
                 echo json_encode($workdayObj);

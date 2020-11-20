@@ -19,6 +19,14 @@ $(document).ready(function() {
         var userid = $(this).val();
         $.get("scripts/workday_manager.php?userid=" + userid, function(data) {
             $.each(data, function(key, value) {
+                // Set modified date string
+                let modifiedString = "";
+                if (value.created_time == value.modified_time) {
+                    modifiedString = ("<b class='text-success'>Luotu: </b>" + value.custom_created_time);
+                } else {
+                    modifiedString = ("<b class='text-danger'>Muokattu: </b>" + value.custom_modified_time);
+                }
+                
                 // Weekday array
                 let weekdayShortFormat = ["Su", "Ma", "Ti", "Ke", "To", "Pe", "La", "Su"];
                 let weekdayLongFormat = ["Sunnuntai", "Maanantai", "Tiistai", "Keskiviikko", "Torstai", "Perjantai", "Lauantai", "Sunnuntai"];
@@ -26,12 +34,13 @@ $(document).ready(function() {
                 // There was bug with .html attribute which did not show complete string but left parts out so we changed it to .prop
                 var timestring = ("<b>Aloitus: </b>" + value.custom_start_time + "<br>" +
                                 "<b>Lopetus: </b>" + value.custom_end_time +
-                                "<span class='breakTime'><br><b>Tauko: </b><span class='breakTimeValue'>" + value.custom_break_time + "</span></span>");
+                                "<span class='breakTime'><br><b>Tauko: </b><span class='breakTimeValue'>" + value.custom_break_time + "</span></span>" +
+                                "<br>" + modifiedString);
                 let dateString = ("<b>" + weekdayLongFormat[d.getDay()] + "</b><br>" + value.custom_dateformat);
                 table.append($("<tr>")
                     // Set id value to original date value for table sorting between dates
                     .append($("<td>").attr("id",value.date).prop("innerHTML", dateString))
-                    .append($("<td style='width:200px'>")
+                    .append($("<td style='width:220px'>")
                         .prop("innerHTML", timestring)
                     )
                     .append($("<td>").attr("id","total_time").html("<span>" + value.total_time + "</span>"))
