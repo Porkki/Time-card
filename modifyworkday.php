@@ -70,6 +70,10 @@ date_default_timezone_set('Europe/Helsinki');
                             Max 250 kirjainta.
                             </small>
                         </div>
+                        <div class="form-group" id="created">
+                            <p>Luotu: <span id="created"></span></p>
+                        </div>
+                        <button type="button" id="cancel" class="btn btn-secondary">Peruuta</button>
                         <button type="submit" class="btn btn-success">Muokkaa työpäivää</button>
                     </form>
                 </div>
