@@ -43,7 +43,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                             <small id="startdateHelp" class="form-text text-muted">Alkaen</small>
                         </div>
                         <div class="col">
-                            <input type="date" class="form-control" name="enddate" id="enddate" value="<?php echo date("Y-m") . "-15"; ?>">
+                            <input type="date" class="form-control" name="enddate" id="enddate" value="<?php echo date("Y-m-d"); ?>">
                             <small id="startdateHelp" class="form-text text-muted">Päättyen</small>
                         </div>
                     </div>
