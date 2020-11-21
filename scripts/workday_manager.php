@@ -113,7 +113,9 @@
                         if ($_SESSION["id"] == $workdayuseridINT) {
                             // Generating specific DATE_FORMAT straigt from mysql for HTML datetime-local.value format
                             if ($stmt2 = $con->prepare("SELECT *, DATE_FORMAT(start_time, '%Y-%m-%dT%H:%i') AS custom_start_time, 
-                            DATE_FORMAT(end_time, '%Y-%m-%dT%H:%i') AS custom_end_time
+                            DATE_FORMAT(end_time, '%Y-%m-%dT%H:%i') AS custom_end_time,
+                            DATE_FORMAT(created_time, '%e.%c.%y %H:%i') AS custom_created_time,
+                            DATE_FORMAT(modified_time, '%e.%c.%y %H:%i') AS custom_modified_time
                             FROM workday WHERE id = ?")) {
                                 $stmt2->bind_param("i", $viewid);
                                 if ($stmt2->execute()) {
@@ -167,7 +169,11 @@
                                                 $userdata_array = $result3->fetch_array(MYSQLI_ASSOC);
                                                 if ($userdata_array["user_company_id"] == $employer_companyid) {
                                                     // They have same company id
-                                                    if ($stmt4 = $con->prepare("SELECT *, DATE_FORMAT(start_time, '%Y-%m-%dT%H:%i') AS custom_start_time, DATE_FORMAT(end_time, '%Y-%m-%dT%H:%i') AS custom_end_time FROM workday WHERE id = ?")) {
+                                                    if ($stmt4 = $con->prepare("SELECT *, DATE_FORMAT(start_time, '%Y-%m-%dT%H:%i') AS custom_start_time, 
+                                                                                DATE_FORMAT(end_time, '%Y-%m-%dT%H:%i') AS custom_end_time,
+                                                                                DATE_FORMAT(created_time, '%e.%c.%y %H:%i') AS custom_created_time,
+                                                                                DATE_FORMAT(modified_time, '%e.%c.%y %H:%i') AS custom_modified_time
+                                                                                FROM workday WHERE id = ?")) {
                                                         $stmt4->bind_param("i", $viewid);
                                                         if($stmt4->execute()) {
                                                             $result4 = $stmt4->get_result();
@@ -203,7 +209,10 @@
             }
         } else if ($_SESSION["class"] == "admin") {
             // Generating specific DATE_FORMAT from mysql for HTML datetime-local.value format
-            if ($stmt = $con->prepare("SELECT *, DATE_FORMAT(start_time, '%Y-%m-%dT%H:%i') AS custom_start_time, DATE_FORMAT(end_time, '%Y-%m-%dT%H:%i') AS custom_end_time FROM workday WHERE id = ?")) {
+            if ($stmt = $con->prepare("SELECT *, DATE_FORMAT(start_time, '%Y-%m-%dT%H:%i') AS custom_start_time, 
+                                        DATE_FORMAT(end_time, '%Y-%m-%dT%H:%i') AS custom_end_time,
+                                        DATE_FORMAT(created_time, '%e.%c.%y %H:%i') AS custom_created_time,
+                                        DATE_FORMAT(modified_time, '%e.%c.%y %H:%i') AS custom_modified_time FROM workday WHERE id = ?")) {
                 $stmt->bind_param("i", $viewid);
                 if($stmt->execute()) {
                     $result = $stmt->get_result();
