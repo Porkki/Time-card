@@ -50,10 +50,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $totaltime_param = $total_time;
         $explanation_param = trim($_POST["explanation"]);
 
-        $stmt->execute();
-        $stmt->close();
-        $con->close();
-
+        // Make sure that endtime is greater than start time before executing query
+        if ($endtimedt > $starttimedt) {
+            $stmt->execute();
+        } else {
+            $workdayObj->error = "Lopetusaika ei voi olla aikaisemmin kuin aloitusaika.";
+            echo json_encode($workdayObj);
+            $stmt->close();
+            $con->close();
+            die();
+        }
         $workdayObj->workday = $total_time;
         echo json_encode($workdayObj);
     }

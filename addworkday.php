@@ -100,8 +100,8 @@ date_default_timezone_set('Europe/Helsinki');
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    Käyttäjän lisäys epäonnistui.<br>
-                                    <span id="errormessage"></span>.
+                                    Työpäivän lisäys epäonnistui.<br>
+                                    <span id="errormessage"></span>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
