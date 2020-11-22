@@ -24,10 +24,9 @@ $(document).ready(function() {
                 )
                 .append($("<td>").html("<span id='totalTime'>" + value.total_time + "</span>"))
                 .append($("<td>").text(value.explanation))
-                //TODO: Align to center
-                .append($("<td>")
+                .append($("<td class='align-middle'>")
                     .append($("<a href='modifyworkday.php?id=" + value.id + "' title='Muokkaa työpäivää' data-toggle='tooltip'><i class='fas fa-edit pr-2 text-success'></i></a>"))
-                    .append($("<a href='#' class='open-removeconfirm' title='Poista työpäivä' data-toggle='modal' data-target='#removeConfirm' data-name='" + value.custom_dateformat + "' data-id='" + value.id + "'><i class='fas fa-trash text-danger'></i></a>"))
+                    .append($("<a href='#' class='open-removeconfirm' title='Poista työpäivä' data-toggle='modal' data-target='#removeConfirm' data-name='" + value.custom_dateformat + "' data-id='" + value.id + "'><i class='fas fa-trash text-danger'></i></a>"))    
                 )
             );
         })
