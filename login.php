@@ -16,34 +16,57 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         exit("Tarkista käyttäjätunnus ja/tai salasana.");
     }
 
-    if ($stmt = $con->prepare('SELECT id, username, password, firstname, lastname, class FROM users WHERE username = ?')) {
+    if ($stmt = $con->prepare('SELECT id, username, password, firstname, lastname, class, user_company_id FROM users WHERE username = ?')) {
         // Bind parameters (s = string, i = int, b = blob, etc), in our case the username is a string so we use "s"
-        $stmt->bind_param('s', $_POST['username']);
+        $stmt->bind_param('s', $username_param);
+        $username_param = trim($_POST['username']);
         $stmt->execute();
         // Store the result so we can check if the account exists in the database.
         $stmt->store_result();
         
         if ($stmt->num_rows > 0) {
-            $stmt->bind_result($id, $username, $password, $firstname, $lastname, $class);
+            $stmt->bind_result($id, $username, $password, $firstname, $lastname, $class, $user_company_id);
             $stmt->fetch();
-            // Account exists, now we verify the password.
-            // Note: remember to use password_hash in your registration file to store the hashed passwords.
-            if (password_verify($_POST['password'], $password)) {
-                // Verification success! User has loggedin!
-                // Create sessions so we know the user is logged in, they basically act like cookies but remember the data on the server.
-                session_regenerate_id();
-                $_SESSION['loggedin'] = TRUE;
-                $_SESSION['username'] = $_POST['username'];
-                $_SESSION['id'] = $id;
-                $_SESSION["firstname"] = $firstname;
-                $_SESSION["lastname"] = $lastname;
-                $_SESSION["class"] = $class;
-                // Redirect user to welcome page
-                header("location: welcome.php");
-            } else {
-                // Incorrect password
-                $error = 'Tarkista käyttäjätunnus ja/tai salasana.';
+
+            // Verify that company user belongs to is active client
+            if ($stmt1 = $con->prepare("SELECT is_client from company WHERE id = ?")) {
+                $stmt1->bind_param("i", $param_id);
+                $param_id = $user_company_id;
+    
+                if ($stmt1->execute()) {
+                    $result = $stmt1->get_result();
+                    if ($result->num_rows == 1) {
+                        $is_client_array = $result->fetch_array(MYSQLI_ASSOC);
+                        $is_client = $is_client_array["is_client"];
+                        if ($is_client == 1) {
+                            // Account exists and company it belongs to is active client, now we verify the password.
+                            // Note: remember to use password_hash in your registration file to store the hashed passwords.
+                            if (password_verify($_POST['password'], $password)) {
+                                // Verification success! User has loggedin!
+                                // Create sessions so we know the user is logged in, they basically act like cookies but remember the data on the server.
+                                session_regenerate_id();
+                                $_SESSION['loggedin'] = TRUE;
+                                $_SESSION['username'] = $_POST['username'];
+                                $_SESSION['id'] = $id;
+                                $_SESSION["firstname"] = $firstname;
+                                $_SESSION["lastname"] = $lastname;
+                                $_SESSION["class"] = $class;
+                                // Redirect user to welcome page
+                                header("location: welcome.php");
+                            } else {
+                                // Incorrect password
+                                $error = 'Tarkista käyttäjätunnus ja/tai salasana.';
+                            }
+                        } else {
+                            $error = 'Yritys ei ole aktiivinen';
+                        }
+                    } else {
+                        $error = 'Tietokanta ongelma';
+                    }
+                }
+                $stmt1->close();
             }
+
         } else {
             // Incorrect username
             $error = 'Tarkista käyttäjätunnus ja/tai salasana.';
