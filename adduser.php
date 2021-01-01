@@ -9,45 +9,6 @@
     }
 ?>
 
-<?php
-    // TODO MOVE THIS LOGIC TO JSON
-    // Yritysten nimien haku lomakkeeseen
-    require_once "config.php";
-    $business = "";
-    // Show employer only own bussiness so user cant create new accounts to company that he does not manage
-    if ($_SESSION["class"] == "employer") {
-        if ($stmt = $con->prepare("SELECT user_company_id from users WHERE id = ?")) {
-            $stmt->bind_param("i", $param_id);
-            $param_id = trim($_SESSION["id"]);
-
-            if ($stmt->execute()) {
-                $result = $stmt->get_result();
-                if ($result->num_rows == 1) {
-                    $user_company_id = $result->fetch_array(MYSQLI_ASSOC);
-                    $companyid = $user_company_id["user_company_id"];
-                    $companyresult = $con->query('SELECT id, company_name FROM company WHERE id = ' . $companyid);
-                    
-                    if ($companyresult->num_rows > 0) {
-                        while ($row = $companyresult->fetch_assoc()) {
-                            $business .= '<option value = "'.$row['id'].'">'.$row['company_name'].'</option>';
-                        }
-                    }
-                }
-            }
-            $stmt->close();
-        }
-    } else {
-        $result = $con->query('SELECT id, company_name FROM company ORDER BY company_name');
-
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $business .= '<option value = "'.$row['id'].'">'.$row['company_name'].'</option>';
-            }
-        }
-    }
-    $con->close();
-?>
-
 <!doctype html>
 <html lang="en">
     <head>
@@ -85,7 +46,6 @@
                             <div class="form-group col">
                                 <label for="user_company_id"><b>Yritys</b></label>
                                 <select class="form-control" id="user_company_id" name="user_company_id" required>
-                                    <?php echo $business; ?>
                                 </select>
                             </div>
                         </div>
@@ -107,6 +67,7 @@
                             <div class="form-group col">
                                 <label for="password"><b>Salasana</b></label>
                                 <input type="password" class="form-control" name="password" placeholder="Salasana" required>
+                                <input type="hidden" class="form-control" name="postfrom" value="createuser">
                             </div>
                         </div>
                         <hr>
@@ -142,7 +103,7 @@
                                 </div>
                                 <div class="modal-body">
                                     Käyttäjän lisäys epäonnistui.<br>
-                                    <span id="errormessage"></span>.
+                                    <span id="errormessage"></span>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>

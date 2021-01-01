@@ -20,12 +20,12 @@ $(document).ready(function() {
 
         $.ajax({
             method: "POST",
-            url: "scripts/addworkday_script.php",
+            url: "api/jsonApi.php",
             dataType: "json",
             data: formdata
         })
             .done(function( data ) {
-                var workday = data.workday;
+                var workday = data.date;
                 var error = data.error;
                 if (workday) {
                     $('#doneModal').modal('show');

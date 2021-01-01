@@ -65,6 +65,7 @@ date_default_timezone_set('Europe/Helsinki');
                             <small id="explanationHelpBlock" class="form-text text-muted">
                             Max 250 kirjainta.
                             </small>
+                            <input type="hidden" class="form-control" name="postfrom" value="createworkday">
                         </div>
                         <button type="submit" class="btn btn-success">Lisää työpäivä</button>
                     </form>

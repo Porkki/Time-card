@@ -7,14 +7,14 @@ $(document).ready(function() {
 
         $.ajax({
             method: "POST",
-            url: "addcompany_script.php",
+            url: "api/jsonApi.php",
             dataType: "json",
             data: formdata
         })
             .done(function( data ) {
-                var companyname = data.companyname;
+                var name = data.name;
                 var error = data.error;
-                if (companyname) {
+                if (name) {
                     document.getElementsByName("company_name")[0].value = "";
                     document.getElementsByName("ytunnus")[0].value = "";
                     document.getElementsByName("company_address")[0].value = "";

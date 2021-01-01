@@ -7,16 +7,25 @@ $(document).ready(function() {
 
     var modified = false;
     var modifiedString = "";
-    $.get("scripts/workday_manager.php?viewid=" + id, function(data) {
-        document.getElementsByName("date")[0].value = data[0].date;
-        document.getElementsByName("starttime")[0].value = data[0].custom_start_time;
-        document.getElementsByName("endtime")[0].value = data[0].custom_end_time;
-        document.getElementsByName("breaktime")[0].value = data[0].break_time;
-        document.getElementsByName("id")[0].value = data[0].id;
-        document.getElementsByName("explanation")[0].value = data[0].explanation;
+    $.get("api/jsonApi.php?mode=workday&action=view&id=" + id, function(data) {
+        if (data.error) {
+            document.getElementById("errormessage").textContent=data.error;
+            $('#unsuccessfulModal').modal('show');
+            $("#unsuccessfulModal").on("hidden.bs.modal", function (e) {
+                // Send user back to front page if id is wrong
+                window.location.href= "welcome.php";
+            });
+            return true;
+        }
+        document.getElementsByName("date")[0].value = data.date;
+        document.getElementsByName("starttime")[0].value = data.html_start_time;
+        document.getElementsByName("endtime")[0].value = data.html_end_time;
+        document.getElementsByName("breaktime")[0].value = data.html_break;
+        document.getElementsByName("id")[0].value = data.id;
+        document.getElementsByName("explanation")[0].value = data.explanation;
 
-        if (data[0].created_time == data[0].modified_time) {
-            modifiedString = ("Luotu: " + data[0].custom_created_time);
+        if (data.created_time == data.modified_time) {
+            modifiedString = ("Luotu: " + data.custom_created_time);
             $("#created").html(modifiedString);
             modified = false;
         } else {
@@ -25,9 +34,9 @@ $(document).ready(function() {
     }, "json")
         .done(function(data) {
             if (modified) {
-                $.get("scripts/user_manager.php?id=" + data[0].modified_user_id, function(userdata) {
-                    modifiedString = ("Luotu: " + data[0].custom_created_time + "<br>" + 
-                                    "Muokattu: " + data[0].custom_modified_time + " käyttäjän " + userdata[0].username + " toimesta.");
+                $.get("api/jsonApi.php?mode=user&action=view&id=" + data.modified_user_id, function(userdata) {
+                    modifiedString = ("Luotu: " + data.custom_created_time + "<br>" + 
+                                    "Muokattu: " + data.custom_modified_time + " käyttäjän " + userdata.username + " toimesta.");
                     $("#created").html(modifiedString);
                 }, "json");
             }
@@ -42,20 +51,19 @@ $(document).ready(function() {
 
         $.ajax({
             method: "POST",
-            url: "scripts/workday_manager.php",
+            url: "api/jsonApi.php",
             dataType: "json",
             data: formdata
         })
             .done(function( data ) {
-                var workday = data.workday;
+                var workday = data.date;
                 var error = data.error;
                 if (workday) {
                     $('#doneModal').modal('show');
                     setTimeout(function() {
                         window.location.href= "workday.php";
                     }, 2000);
-                } 
-                if (error) {
+                } else if (error) {
                     document.getElementById("errormessage").textContent=error;
                     $('#unsuccessfulModal').modal('show');
                 }
@@ -65,4 +73,6 @@ $(document).ready(function() {
     $("#cancel").click(function() {
         window.history.back();
     });
+
+    // Send user back if id is 
 });

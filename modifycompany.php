@@ -40,6 +40,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION[
                                     <th scope="col">Osoite</th>
                                     <th scope="col">Postinumero</th>
                                     <th scope="col">Paikkakunta</th>
+                                    <th scope="col">Työntekijät</th>
                                     <th scope="col">Voim. ol. asiakas</th>
                                     <th scope="col">Luonut käyttäjä</th>
                                     <th scope="col">Toiminto</th>

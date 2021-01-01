@@ -8,9 +8,9 @@ $(document).ready(function() {
     // Create default option
     dropdown.append('<option selected="true" disabled>Valitse yritys</option>');
     // Populate dropdown with list of companies
-    $.get("scripts/company_manager.php", function(data) {
+    $.get("api/jsonApi.php?mode=company&action=view&id=all", function(data) {
         $.each(data, function(key, value) {
-            dropdown.append($("<option></option>").attr("value", value.id).text(value.company_name));
+            dropdown.append($("<option></option>").attr("value", value.id).text(value.name));
         })
     }, "json");
 
@@ -19,13 +19,13 @@ $(document).ready(function() {
     var search_params = url.searchParams;
     var id = search_params.get("id");
     // Send get request to script and then assign values to the form
-    $.get("scripts/user_manager.php?id=" + id, function(data) {
-        document.getElementsByName("firstname")[0].value = data[0].firstname;
-        document.getElementsByName("lastname")[0].value = data[0].lastname;
-        document.getElementsByName("username")[0].value = data[0].username;
-        document.getElementsByName("class")[0].value = data[0].class;
-        document.getElementsByName("user_company_id")[0].value = data[0].user_company_id;
-        document.getElementsByName("id")[0].value = data[0].id;
+    $.get("api/jsonApi.php?mode=user&action=view&id=" + id, function(data) {
+        document.getElementsByName("firstname")[0].value = data.firstname;
+        document.getElementsByName("lastname")[0].value = data.lastname;
+        document.getElementsByName("username")[0].value = data.username;
+        document.getElementsByName("class")[0].value = data.class;
+        document.getElementsByName("user_company_id")[0].value = data.user_company_id;
+        document.getElementsByName("id")[0].value = data.id;
     }, "json");
 
     // Form handling
@@ -37,7 +37,7 @@ $(document).ready(function() {
 
         $.ajax({
             method: "POST",
-            url: "scripts/user_manager.php",
+            url: "api/jsonApi.php",
             dataType: "json",
             data: formdata
         })

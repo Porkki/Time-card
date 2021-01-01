@@ -8,7 +8,7 @@ $(document).ready(function() {
 
     var counter = 0;
     // Populate table with list of users
-    $.get("scripts/user_manager.php", function(data) {
+    $.get("api/jsonApi.php?mode=user&action=view&id=all", function(data) {
         $.each(data, function(key, value) {
             table.append($("<tr>")
                 .append($("<td>").text(value.firstname))
@@ -22,37 +22,36 @@ $(document).ready(function() {
             );
         })
     }, "json")
-        // Get company name from company id and count how many users are in it
+        // Count how many employees there are in the company
         .always(function() {
             $('td[name = "user_company_id"]').each(function(index, element){
-                $.get("scripts/company_manager.php?id=" + element.innerHTML, function(company) {
-                    element.innerHTML = company[0].company_name;
-                }, "json");
                 counter++;
                 document.getElementById("numberofusers").innerHTML=counter;
             });
-            
         });
     // https://stackoverflow.com/a/25060114
     // Send name&userid to show in modal
     $('#removeConfirm').on('show.bs.modal', function (e) {
-        var name = $(e.relatedTarget).data('name');
+        let name = $(e.relatedTarget).data('name');
         $("#username").text( name );
-        var id = $(e.relatedTarget).data('id');
-        $("#ahrefremoveuser").attr("href", "scripts/user_manager.php?remove=" + id);
-    })
+        let id = $(e.relatedTarget).data('id');
 
-    // Show report message of user removal action
-    const urlParams = new URLSearchParams(window.location.search);
-    const myParam = urlParams.has('result');
+        $("#ahrefremoveuser").click(function() {
+            $.get("api/jsonApi.php?mode=user&action=remove&id=" + id, function(data) {
+                if (data.message) {
+                    $("#removeConfirm").modal("hide");
+                    $('#doneModal').modal('show');
+                } else if (data.error) {
+                    $("#removeConfirm").modal("hide");
+                    $('#unsuccessfulModal').modal('show');
+                }
+            }, "json");
+            // Return false on <a></a> click to prevent page refresh/forwarding
+            return false;
+        });
+    });
 
-    if (myParam) {
-        if (urlParams.get("result") === "done") {
-            $('#doneModal').modal('show');
-        } else if (urlParams.get("result") === "unsuccessful") {
-            $('#unsuccessfulModal').modal('show');
-        } else {
-            $('#unsuccessfulModal').modal('show');
-        }
-    }
+    $("#doneModal").on("hidden.bs.modal", function (e) {
+        location.reload();
+    });
 });

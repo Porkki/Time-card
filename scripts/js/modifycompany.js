@@ -3,55 +3,56 @@ $(document).ready(function() {
     // Target element
     var table = $("#companies > tbody:last-child");
     // Populate table with list of companies
-    $.get("scripts/company_manager.php", function(data) {
+    $.get("api/jsonApi.php?mode=company&action=view&id=all", function(data) {
         $.each(data, function(key, value) {
+            let is_client;
+            if (value.is_client) {
+                is_client = "Kyllä";
+            } else {
+                is_client = "Ei";
+            }
             table.append($("<tr>")
-                .append($("<td>").text(value.company_name))
+                .append($("<td>").text(value.name))
                 .append($("<td>").text(value.ytunnus))
-                .append($("<td>").text(value.company_address))
-                .append($("<td>").text(value.company_postcode))
-                .append($("<td>").text(value.company_area))
-                .append($("<td>").text(value.is_client))
+                .append($("<td>").text(value.address))
+                .append($("<td>").text(value.postcode))
+                .append($("<td>").text(value.area))
+                .append($("<td>").attr("name","user_count").text(value.worker_count))
+                .append($("<td>").text(is_client))
                 .append($("<td>").attr("name","created_user_id").text(value.created_user_id))
                 .append($("<td>")
                     .append($("<a href='updatecompany.php?id=" + value.id + "' title='Muokkaa yritystä' data-toggle='tooltip'><i class='fas fa-edit pr-2 text-success'></i></a>"))
-                    .append($("<a href='#' class='open-removeconfirm' title='Poista yritys' data-toggle='modal' data-target='#removeConfirm' data-name='" + value.company_name + "' data-id='" + value.id + "'><i class='fas fa-trash text-danger'></i></a>"))
+                    .append($("<a href='#' class='open-removeconfirm' title='Poista yritys' data-toggle='modal' data-target='#removeConfirm' data-name='" + value.name + "' data-id='" + value.id + "'><i class='fas fa-trash text-danger'></i></a>"))
                 )
             );
         })
 
 
-    }, "json")
-        // Get username who created the company to database
-        .always(function() {
-            $('td[name = "created_user_id"]').each(function(index, element){
-                $.get("scripts/user_manager.php?id=" + element.innerHTML, function(user) {
-                    element.innerHTML = user[0].username;
-                }, "json");
-            });
-        });
+    }, "json");
 
 
     // https://stackoverflow.com/a/25060114
     // Send name&userid to show in modal
     $('#removeConfirm').on('show.bs.modal', function (e) {
-        var name = $(e.relatedTarget).data('name');
+        let name = $(e.relatedTarget).data('name');
         $("#name").text( name );
-        var id = $(e.relatedTarget).data('id');
-        $("#ahrefremoveuser").attr("href", "scripts/workday_manager.php?remove=" + id);
-    })
+        let id = $(e.relatedTarget).data('id');
 
-    // Show report message of user removal action
-    const urlParams = new URLSearchParams(window.location.search);
-    const myParam = urlParams.has('result');
+        $("#ahrefremoveuser").click(function() {
+            $.get("api/jsonApi.php?mode=company&action=remove&id=" + id, function(data) {
+                if (data.message) {
+                    $("#removeConfirm").modal("hide");
+                    $('#doneModal').modal('show');
+                } else if (data.error) {
+                    $("#removeConfirm").modal("hide");
+                    $('#unsuccessfulModal').modal('show');
+                }
+            }, "json");
+            return false;
+        });
+    });
 
-    if (myParam) {
-        if (urlParams.get("result") === "done") {
-            $('#doneModal').modal('show');
-        } else if (urlParams.get("result") === "unsuccessful") {
-            $('#unsuccessfulModal').modal('show');
-        } else {
-            $('#unsuccessfulModal').modal('show');
-        }
-    }
+    $("#doneModal").on("hidden.bs.modal", function (e) {
+        location.reload();
+    });
 });

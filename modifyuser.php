@@ -65,7 +65,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION[
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Peruuta</button>
-                            <a href="" id="ahrefremoveuser" class="btn btn-danger">Poista</a>
+                            <a href="#" id="ahrefremoveuser" class="btn btn-danger">Poista</a>
                         </div>
                     </div>
                 </div>

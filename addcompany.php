@@ -60,6 +60,7 @@
                                 <option value=1>Kyllä</option>
                                 <option value=0>Ei</option>
                             </select>
+                            <input type="hidden" class="form-control" name="postfrom" value="createcompany">
                         </div>
                         <button type="submit" class="btn btn-success">Lisää yritys</button>
                     </form>
@@ -93,7 +94,7 @@
                                 </div>
                                 <div class="modal-body">
                                     Yrityksen lisäys epäonnistui.<br>
-                                    <span id="errormessage"></span>.
+                                    <span id="errormessage"></span>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>

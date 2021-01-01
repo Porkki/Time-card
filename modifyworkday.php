@@ -69,6 +69,7 @@ date_default_timezone_set('Europe/Helsinki');
                             <small id="explanationHelpBlock" class="form-text text-muted">
                             Max 250 kirjainta.
                             </small>
+                            <input type="hidden" class="form-control" name="postfrom" value="updateworkday">
                         </div>
                         <div class="form-group" id="created">
                             <p>Luotu: <span id="created"></span></p>
@@ -102,13 +103,12 @@ date_default_timezone_set('Europe/Helsinki');
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="unsuccessfulModalLabel">Ilmoitus</h5>
+                        <h5 class="modal-title" id="unsuccessfulModalLabel">Virhe</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        Työpäivän päivitys epäonnistui.<br>
                         <span id="errormessage"></span>
                     </div>
                     <div class="modal-footer">

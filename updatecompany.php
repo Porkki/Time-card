@@ -63,6 +63,7 @@
                                 <option value=0>Ei</option>
                             </select>
                             <input type="hidden" class="form-control" name="id">
+                            <input type="hidden" class="form-control" name="postfrom" value="updatecompany">
                         </div>
                         <button type="submit" value="submit" name="submit" class="btn btn-success">Päivitä</button>
                         <a href="modifycompany.php" class="btn btn-danger">Peruuta</a>

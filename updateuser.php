@@ -68,6 +68,7 @@
                                 <label for="password"><b>Salasana</b></label>
                                 <input type="password" class="form-control" name="password" placeholder="Salasana">
                                 <input type="hidden" class="form-control" name="id">
+                                <input type="hidden" class="form-control" name="postfrom" value="updateuser">
                             </div>
                         </div>
                         <hr>
