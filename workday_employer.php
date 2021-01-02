@@ -48,7 +48,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         </div>
                     </div>
                     
-                    <table id="workdays" class="table table-striped table-hover w-100">
+                    <table id="workdays" class="table table-striped table-hover table-responsive w-100">
                         <thead>
                             <tr>
                                 <th scope="col">Päivämäärä</th>

@@ -1,13 +1,34 @@
 <?php
 // Initialize the session
 session_start();
-$error = "";
 
 // Check if the user is already logged in, if yes then redirect him to welcome page
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     header("location: welcome.php");
     exit;
 }
+
+include_once __DIR__ . "./models/user.php";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (!isset($_POST["username"], $_POST["password"])) {
+        return json_encode(array("error" => "Tarkista käyttäjätunnus ja/tai salasana."), JSON_UNESCAPED_UNICODE);
+    }
+
+    $loginUserObject = User::withUsernameAndPassword(trim($_POST["username"]),trim($_POST["password"]));
+    if (empty($loginUserObject->error)) {
+        session_regenerate_id();
+        $_SESSION['loggedin'] = TRUE;
+        $_SESSION['username'] = $_POST['username'];
+        $_SESSION['id'] = $loginUserObject->id;
+        $_SESSION["firstname"] = $loginUserObject->firstname;
+        $_SESSION["lastname"] = $loginUserObject->lastname;
+        $_SESSION["class"] = $loginUserObject->class;   
+    }
+    echo json_encode($loginUserObject);
+}
+
+/*
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     // Include config file
     require_once "config.php";
@@ -75,34 +96,5 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->close();
     }
 }
+*/
 ?>
-
-<html>
-<head>
-  <link rel="stylesheet" href="login.css">
-</head>
-<body>
-<div class="content animate">
-    <div class="imgcontainer">
-        <img src="img/logo.png" class="logo">
-        <label><h1>Työajanseuranta</h1></label>
-    </div>
-    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-        <label for="uname"><b>Käyttäjätunnus</b></label>
-        <input type="text" placeholder="Syötä käyttäjätunnus" name="username" required>
-
-        <label for="psw"><b>Salasana</b></label>
-        <input type="password" placeholder="Syötä salasana" name="password" required>
-        <button type="submit">Kirjaudu</button>
-    </form>
-    <p style="color:red">
-    <?php
-        if (!empty($error)) {
-            echo $error;
-        }
-    ?>
-    </p>
-</div>
-
-</body>
-</html>

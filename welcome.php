@@ -40,7 +40,7 @@ include_once __DIR__ . "./models/company.php";
                             $companylogoPath = "img/company_logos/$user->user_company_id.png";
 
                             if (file_exists($companylogoPath)) {
-                                echo "<img class='mx-auto d-block' src='$companylogoPath'>";
+                                echo "<img class='mx-auto img-fluid d-block' src='$companylogoPath'>";
                             } else {
                                 echo "<h1 class='text-center'>$userCompany->name</h1>";
                             }
