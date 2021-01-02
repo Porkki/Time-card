@@ -1,7 +1,7 @@
 $(document).ready(function() {
     $( "#target" ).submit(function( event ) {
         // Put form data to variable
-        var formdata = $( this ).serialize();
+        var formdata = new FormData(this);
         // Disable form page refresh
         event.preventDefault();
 
@@ -9,7 +9,10 @@ $(document).ready(function() {
             method: "POST",
             url: "api/jsonApi.php",
             dataType: "json",
-            data: formdata
+            data: formdata,
+            cache: false,
+            contentType: false,
+            processData: false
         })
             .done(function( data ) {
                 var name = data.name;

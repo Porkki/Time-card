@@ -127,6 +127,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         case "updateworkday":
             echo updateWorkday();
             break;
+        case "removelogo":
+            echo removeCompanyLogo(trim($_POST["id"]));
+            break;
     }
 }
 
@@ -382,6 +385,16 @@ function createCompany() {
         return json_encode(array("error" => "Yritys on jo olemassa!"), JSON_UNESCAPED_UNICODE);
     }
 
+    // Check that logo is in correct filetype
+    if (empty($_FILES["company_logo"]["error"])) {
+        if (getimagesize($_FILES["company_logo"]["tmp_name"])) {
+            $file_extension = strtolower(pathinfo($_FILES["company_logo"]["name"],PATHINFO_EXTENSION));
+            if ($file_extension != "png") {
+                return json_encode(array("error" => "Logo saa olla vain .png muodossa."), JSON_UNESCAPED_UNICODE);
+            }
+        }
+    }
+
     $company_name = trim($_POST["company_name"]);
     $ytunnus = trim($_POST["ytunnus"]);
     $company_address = trim($_POST["company_address"]);
@@ -393,6 +406,18 @@ function createCompany() {
     $newCompanyObject = new Company(null, $company_name, $ytunnus, $company_address, $company_postcode, $company_area, $created_user_id, $is_client);
 
     if ($newCompanyObject->createInstancetoDB()) {
+        // Company logo handling
+        if (empty($_FILES["company_logo"]["error"])) {
+            if (getimagesize($_FILES["company_logo"]["tmp_name"])) {
+                $newCompanyObject = Company::withName(trim($_POST["company_name"]));
+                $target_dir = "../img/company_logos/";
+                $target_file = $target_dir . $newCompanyObject->id . ".png";
+    
+                if (!move_uploaded_file($_FILES["company_logo"]["tmp_name"],$target_file)) {
+                    return json_encode(array("error" => "Logon päivitys epäonnistui."), JSON_UNESCAPED_UNICODE);
+                }
+            }
+        }
         return json_encode($newCompanyObject, JSON_UNESCAPED_UNICODE);
     } else {
         return json_encode(array("error" => "Uuden yrityksen luonti epäonnistui."), JSON_UNESCAPED_UNICODE);
@@ -412,6 +437,27 @@ function updateCompany() {
     $modifyCompanyObject = Company::withID(trim($_POST["id"]));
     if (!empty($modifyCompanyObject->error)) {
         return json_encode($modifyCompanyObject, JSON_UNESCAPED_UNICODE);
+    }
+
+    if (empty($_FILES["company_logo"]["error"])) {
+        if (getimagesize($_FILES["company_logo"]["tmp_name"])) {
+            $target_dir = "../img/company_logos/";
+            $target_file = $target_dir . trim($_POST["id"]) . ".png";
+
+            $file_extension = strtolower(pathinfo($_FILES["company_logo"]["name"],PATHINFO_EXTENSION));
+            if ($file_extension != "png") {
+                return json_encode(array("error" => "Logo saa olla vain .png muodossa."), JSON_UNESCAPED_UNICODE);
+            }
+            if (file_exists($target_file)) {
+                if(!unlink($target_file)) {
+                    return json_encode(array("error" => "Vanhan logon poisto epäonnistui."), JSON_UNESCAPED_UNICODE);
+                }
+            } 
+
+            if (!move_uploaded_file($_FILES["company_logo"]["tmp_name"],$target_file)) {
+                return json_encode(array("error" => "Logon päivitys epäonnistui."), JSON_UNESCAPED_UNICODE);
+            }
+        }
     }
 
     $modifyCompanyObject->name = trim($_POST["company_name"]);
@@ -439,11 +485,24 @@ function removeCompany($id) {
     $companyObject = Company::withID(trim($id));
     if (empty($companyObject->error)) {
         if ($companyObject->removeInstance()) {
+            removeCompanyLogo($id);
             echo json_encode(array("message" => "Yritys poistettu onnistuneesti."), JSON_UNESCAPED_UNICODE);
         }
     } else {
         echo json_encode($companyObject, JSON_UNESCAPED_UNICODE);
     }
+}
+
+function removeCompanyLogo($id) {
+    $target_dir = "../img/company_logos/";
+    $target_file = $target_dir . $id . ".png";
+
+    if (file_exists($target_file)) {
+        if(!unlink($target_file)) {
+            return json_encode(array("error" => "Logon poisto epäonnistui."), JSON_UNESCAPED_UNICODE);
+        }
+    }
+    return json_encode(array("done" => "true"), JSON_UNESCAPED_UNICODE);
 }
 
 function createWorkday() {

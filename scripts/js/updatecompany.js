@@ -17,15 +17,18 @@ $(document).ready(function() {
     // Form handling
     $( "#target" ).submit(function( event ) {
         // Put form data to variable
-        var formdata = $( this ).serialize();
+        var formdata = new FormData(this);
         // Disable form page refresh
         event.preventDefault();
 
         $.ajax({
-            method: "POST",
+            type: "POST",
             url: "api/jsonApi.php",
             dataType: "json",
-            data: formdata
+            data: formdata,
+            cache: false,
+            contentType: false,
+            processData: false
         })
             .done(function( data ) {
                 var companyname = data.name;
@@ -39,6 +42,30 @@ $(document).ready(function() {
                 if (error) {
                     document.getElementById("errormessage").textContent=error;
                     $('#unsuccessfulModal').modal('show');
+                }
+            })
+    });
+
+    // Company logo removal
+    $("#remove_logo").click(function() {
+        $.ajax({
+            type: "POST",
+            url: "api/jsonApi.php",
+            dataType: "json",
+            data: {
+                postfrom: "removelogo",
+                id: document.getElementsByName("id")[0].value
+            }
+        })
+            .done(function(data) {
+                let error = data.error;
+                if (error) {
+                    $('#unsuccessfulModal').modal('show');
+                } else {
+                    $('#doneModal').modal('show');
+                    setTimeout(function() {
+                        location.reload();
+                    }, 2000);
                 }
             })
     });

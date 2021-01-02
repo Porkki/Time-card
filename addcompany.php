@@ -29,7 +29,9 @@
             <div class="row no-gutters">
                 <?php include "nav.php"; ?>
                 <div class="box-shadow col-md w-100 border bg-white p-2">
-                    <form id="target">
+                    <h1>Lisää yritys</h1>
+                    <hr>
+                    <form id="target" enctype="multipart/form-data" method="POST">
                         <div class="form-row">
                             <div class="form-group col">
                                 <label for="company_name"><b>Yrityksen nimi</b></label>
@@ -54,13 +56,20 @@
                                 <input type="text" class="form-control" name="company_area" placeholder="Helsinki" required>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="is_client"><b>Voimassa oleva asiakkuus</b></label>
-                            <select class=form-control name="is_client">
-                                <option value=1>Kyllä</option>
-                                <option value=0>Ei</option>
-                            </select>
-                            <input type="hidden" class="form-control" name="postfrom" value="createcompany">
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label for="is_client"><b>Voimassa oleva asiakkuus</b></label>
+                                <select class=form-control name="is_client">
+                                    <option value=1>Kyllä</option>
+                                    <option value=0>Ei</option>
+                                </select>
+                                <input type="hidden" class="form-control" name="postfrom" value="createcompany">
+                            </div>
+                            <div class="form-group col">
+                                <label for="company_logo"><b>Logo</b></label><br>
+                                <input type="file" name="company_logo" accept="image/png">
+                                <small id="company_logoHelp" class="form-text text-muted">Vain .png muotoiset (Ei pakollinen)</small>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-success">Lisää yritys</button>
                     </form>

@@ -31,7 +31,27 @@
                 <div class="box-shadow col-md w-100 border bg-white p-2">
                     <h1>Muokkaa yritystä</h1>
                     <hr>
-                    <form id="target">
+                    <form id="target" enctype="multipart/form-data" method="POST">
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <?php
+                                $id = $_GET["id"];
+                                $companylogoPath = "img/company_logos/$id.png";
+
+                                if (file_exists($companylogoPath)) {
+                                    echo "<img class='img-fluid' src='$companylogoPath'>";
+                                } else {
+                                    echo "<h1 class='text-center'>Logoa ei löydy</h1>";
+                                }
+                                ?>
+                            </div>
+                            <div class="form-group col">
+                                <label for="company_logo"><b>Valitse uusi logo</b></label><br>
+                                <input type="file" name="company_logo" accept="image/png">
+                                <small id="company_logoHelp" class="form-text text-muted">Vain .png muotoiset</small><br>
+                                <button type="button" class="btn btn-danger" id="remove_logo">Poista logo</button>
+                            </div>
+                        </div>
                         <div class="form-row">
                             <div class="form-group col">
                                 <label for="company_name"><b>Yrityksen nimi</b></label>
@@ -58,7 +78,7 @@
                         </div>
                         <div class="form-group">
                             <label for="is_client"><b>Voimassa oleva asiakkuus</b></label>
-                            <select class=form-control name="is_client">
+                            <select class="form-control" name="is_client">
                                 <option value=1>Kyllä</option>
                                 <option value=0>Ei</option>
                             </select>
