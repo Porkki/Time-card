@@ -32,21 +32,33 @@ include_once __DIR__ . "./models/company.php";
             <div class="row no-gutters">
                 <?php include "nav.php"; ?>
                 <div class="box-shadow col-md w-100 border bg-white p-2">
-                    <?php
-                    $user = User::withID(trim($_SESSION["id"]));
-                    $userCompany = Company::withID($user->user_company_id);
-                    $companylogoPath = "img/company_logos/$user->user_company_id.png";
+                    <div class="row">
+                        <div class="col">
+                            <?php
+                            $user = User::withID(trim($_SESSION["id"]));
+                            $userCompany = Company::withID($user->user_company_id);
+                            $companylogoPath = "img/company_logos/$user->user_company_id.png";
 
-                    if (file_exists($companylogoPath)) {
-                        echo "<img class='mx-auto d-block' src='$companylogoPath'>";
-                    } else {
-                        echo "<h1 class='text-center'>$userCompany->name</h1>";
-                    }
-                    ?>
-                    <hr>
-                    <h1>Tervetuloa <?php echo $user->firstname . " " . $user->lastname . "!"; ?></h1>
-                    <canvas id="myChart" class="col-md"></canvas>
-                    <small id="myChart" class="form-text text-muted">Kuluvan viikon tunnit</small>
+                            if (file_exists($companylogoPath)) {
+                                echo "<img class='mx-auto d-block' src='$companylogoPath'>";
+                            } else {
+                                echo "<h1 class='text-center'>$userCompany->name</h1>";
+                            }
+                            ?>
+                            <hr>
+                            <h1>Tervetuloa <?php echo $user->firstname . " " . $user->lastname . "!"; ?></h1>
+                        </div>
+                        <div class="w-100"></div>
+                        <div class="col-lg">
+                            <small class="text-muted"><b>Kuluvan viikon tunnit</b></small>
+                            <canvas id="currentweek" class="col-md"></canvas>
+                            <p class="text-center text-muted">Tunnit yhteensä: <span id="currentweektotalhours"></span></p>
+                        </div>
+                        <div class="col-lg">
+                            <small class="text-muted"><b>Vuoden yhteenveto</b></small>
+                            <canvas id="monthtotal" class="col-md"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
