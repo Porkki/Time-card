@@ -122,13 +122,16 @@ $(document).ready(function() {
 
     $.get("api/jsonApi.php?mode=workday&action=view&id=between&start=2020-01-01&end=2020-12-31", function(data) {
         let dataset = [];
-        let monthtotal = 0;
-        let curmonth = 1;
+        let monthtotal = 0; // Keep total seconds of the current month 
+        var curmonth = 1;  // Keep track at which month we are in currently
         let firstcheck = false;
+        // Note: This script expects that incoming data from api is ordered by date, otherwise this would not work in current design
         data.forEach(function(item) {
+            // Get month number to compare for where dataset should be adding data
             let date = moment(item.date);
             let monthnumber = date.format("M");
 
+            // If workdays does not start at January we need to push 0 seconds to all months before first workday of the year
             if (!firstcheck) {
                 while (curmonth < monthnumber) {
                     dataset.push(0);
@@ -138,9 +141,16 @@ $(document).ready(function() {
                 firstcheck = true;
             }
 
-            if (curmonth < monthnumber) {
+            // When GET data month switches to next we know that we are finished with calculatin that month and we can push it in to the dataset
+            if (curmonth < parseInt(monthnumber)) {
                 dataset.push(monthtotal);
-                monthtotal = 0;
+                monthtotal = 0; // Reset monthtotal
+                curmonth++;     // Add one to curmonth to keep track where we are
+            }
+
+            // If we have empty months in between data, eg Jan and Mar has hours but Feb doesnt we need to push 0 seconds so many times that there are empty months in data
+            while (dataset.length < monthnumber-1) {
+                dataset.push(0);
                 curmonth++;
             }
             
@@ -170,7 +180,7 @@ $(document).ready(function() {
                 */
             
         });
-
+        // Loop ends at december so we need to push final month manually in
         if (curmonth == 12) {
             dataset.push(monthtotal);
         }
