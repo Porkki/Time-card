@@ -18,23 +18,27 @@ if ($_SESSION["class"] == "employee") {
                 <li class="nav-item">
                     <a class="nav-link <?php if ($path[2] == "welcome.php") {echo('active');} else {echo('');}?>" href="welcome.php">Etusivu</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link <?php if ($path[2] == "workday.php") {echo('active');} else {echo('');}?>" href="workday.php">Työpäivät</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle <?php if ($path[2] == "workday.php" || $path[2] == "addworkday.php" || $path[2] == "workday_employer.php" || $path[2] == "modifyworkday.php") {echo('active');} else {echo('');}?>" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Työpäivät
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="nav-link <?php if ($path[2] == "workday.php") {echo('active');} else {echo('');}?>" href="workday.php">Katsele työpäiviä</a>
+                        <a class="nav-link <?php if ($path[2] == "addworkday.php") {echo('active');} else {echo('');}?>" href="addworkday.php">Lisää työpäivä</a>
+                        <?php if ($_SESSION["class"] == "admin" || $_SESSION["class"] == "employer") { ?>
+                            <a class="nav-link <?php if ($path[2] == "workday_employer.php") {echo('active');} else {echo('');}?>" href="workday_employer.php">Työntekijän työpäivät</a>
+                        <?php } ?>
+                    </div>
                 </li>
                 <?php if ($_SESSION["class"] == "admin" || $_SESSION["class"] == "employer") { ?>
-                <li class="nav-item">
-                    <a class="nav-link <?php if ($path[2] == "workday_employer.php") {echo('active');} else {echo('');}?>" href="workday_employer.php">Työntekijän työpäivät</a>
-                </li>
-                <?php } ?>
-                <li class="nav-item">
-                    <a class="nav-link <?php if ($path[2] == "addworkday.php") {echo('active');} else {echo('');}?>" href="addworkday.php">Lisää työpäivä</a>
-                </li>
-                <?php if ($_SESSION["class"] == "admin" || $_SESSION["class"] == "employer") { ?>
-                <li class="nav-item">
-                    <a class="nav-link <?php if ($path[2] == "adduser.php") {echo('active');} else {echo('');}?>" href="adduser.php">Lisää käyttäjiä</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link <?php if ($path[2] == "modifyuser.php") {echo('active');} else {echo('');}?>" href="modifyuser.php">Muokkaa/Poista käyttäjiä</a>
+                <li class="nav-item dropdown <?php if ($path[2] == "adduser.php" || $path[2] == "modifyuser.php" || $path[2] == "updateuser.php") {echo('active');} else {echo('');}?>">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Käyttäjät
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="nav-link <?php if ($path[2] == "modifyuser.php") {echo('active');} else {echo('');}?>" href="modifyuser.php">Katsele työntekijöitä</a>
+                        <a class="nav-link <?php if ($path[2] == "adduser.php") {echo('active');} else {echo('');}?>" href="adduser.php">Lisää työntekijöitä</a>
+                    </div>
                 </li>
                 <?php } ?>
                 <?php if ($_SESSION["class"] == "admin") { ?>
