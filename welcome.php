@@ -55,8 +55,14 @@ include_once __DIR__ . "./models/company.php";
                             <p class="text-center text-muted">Tunnit yhteensä: <span id="currentweektotalhours"></span></p>
                         </div>
                         <div class="col-lg">
-                            <small class="text-muted"><b>Vuoden yhteenveto</b></small>
-                            <canvas id="monthtotal" class="col-md"></canvas>
+                            <small class="text-muted"><b>Kuluvan vuoden yhteenveto (<span id="currentyear"></span>)</b></small>
+                            <canvas id="currentyeartotal" class="col-md"></canvas>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg">
+                        <small class="text-muted"><b>Viime vuoden yhteenveto (<span id="previousyear"></span>)</b></small>
+                        <canvas id="lastyeartotal" class="col-md"></canvas>
                         </div>
                     </div>
                 </div>
