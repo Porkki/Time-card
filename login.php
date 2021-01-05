@@ -6,6 +6,9 @@ session_start();
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     header("location: welcome.php");
     exit;
+} else {
+    header("location: index.php");
+    exit;
 }
 
 include_once __DIR__ . "./models/user.php";
