@@ -16,24 +16,34 @@ $(document).ready(function() {
         return hours + ":" + minutes;
     }
     moment.locale("fi");
-    var start = moment().startOf("week");
-    var end = moment().endOf("week");
+    var startweek = moment().startOf("week");
+    var endweek = moment().endOf("week");
 
-    var startstr = start.format("YYYY-MM-DD");
-    var endstr = end.format("YYYY-MM-DD");
-    var curyearstr = start.format("YYYY");
-    var previousyearstr = start.subtract(1, "year").format("YYYY");
+    var startweekstr = startweek.format("YYYY-MM-DD");
+    var endweekstr = endweek.format("YYYY-MM-DD");
 
-    $("#currentyear").html(curyearstr);
-    $("#previousyear").html(previousyearstr);
-
-    $.get("api/jsonApi.php?mode=workday&action=view&id=between&start="+startstr+"&end="+endstr, function(data) {
+    $.get("api/jsonApi.php?mode=workday&action=view&id=between&start="+startweekstr+"&end="+endweekstr, function(data) {
         let label = [];
         let dataset = [];
         let totalsecs = 0;
+        let lastdaynumber = 1;
 
         data.forEach(function(item) {
+
             let date = moment(item.date);
+            let currentdaynumber = parseInt(date.format("d"));
+
+            // Push 0 when there is skipped days in data
+            while (lastdaynumber < currentdaynumber) {
+                let emptydate = moment(date).date(lastdaynumber);
+                let datapoint = {
+                    x: emptydate,
+                    y: 0
+                }
+                dataset.push(datapoint);
+                lastdaynumber++;
+            }
+
             let timestring = item.total_time;
             let splitstring = timestring.split(":");
 
@@ -42,13 +52,14 @@ $(document).ready(function() {
             let total = hoursecs+minutesec;
             totalsecs += total;
 
-            let datapoint = {
-                x: date,
-                y: total
+            if (lastdaynumber == currentdaynumber) {
+                let datapoint = {
+                    x: date,
+                    y: total
+                }
+                dataset.push(datapoint);
+                lastdaynumber++;
             }
-            dataset.push(datapoint);
-
-            label.push(item.date);
         });
 
         let totalhours = Math.floor(totalsecs / 3600);
@@ -57,13 +68,13 @@ $(document).ready(function() {
 
         var chartdata = {
             labels: [
-                ["Maanantai", start.format("DD.MM")], 
-                ["Tiistai", start.add(1, "days").format("DD.MM")], 
-                ["Keskiviikko", start.add(1, "days").format("DD.MM")], 
-                ["Torstai", start.add(1, "days").format("DD.MM")], 
-                ["Perjantai", start.add(1, "days").format("DD.MM")], 
-                ["Lauantai", start.add(1, "days").format("DD.MM")], 
-                ["Sunnuntai", start.add(1, "days").format("DD.MM")]
+                ["Maanantai", startweek.format("DD.MM")], 
+                ["Tiistai", startweek.add(1, "days").format("DD.MM")], 
+                ["Keskiviikko", startweek.add(1, "days").format("DD.MM")], 
+                ["Torstai", startweek.add(1, "days").format("DD.MM")], 
+                ["Perjantai", startweek.add(1, "days").format("DD.MM")], 
+                ["Lauantai", startweek.add(1, "days").format("DD.MM")], 
+                ["Sunnuntai", startweek.add(1, "days").format("DD.MM")]
             ],
             datasets: [
                 {
@@ -125,6 +136,140 @@ $(document).ready(function() {
             }
         });
     }, "json");
+
+    var startmonth = moment().startOf("month");
+    var endmonth = moment().endOf("month");
+
+    var startmonthstr = startmonth.format("YYYY-MM-DD");
+    var endmonthstr = endmonth.format("YYYY-MM-DD");
+
+    $.get("api/jsonApi.php?mode=workday&action=view&id=between&start="+startmonthstr+"&end="+endmonthstr, function(data) {
+        let label = [];
+        let dataset = [];
+        let totalsecs = 0;
+        let lastdaynumber = 1;
+
+        data.forEach(function(item) {
+
+            let date = moment(item.date);
+            let currentdaynumber = parseInt(date.format("D"));
+
+            // Push 0 when there is skipped days in data
+            while (lastdaynumber < currentdaynumber) {
+                let emptydate = moment(date).date(lastdaynumber);
+                let datapoint = {
+                    x: emptydate,
+                    y: 0
+                }
+                dataset.push(datapoint);
+                lastdaynumber++;
+            }
+
+            let timestring = item.total_time;
+            let splitstring = timestring.split(":");
+
+            let hoursecs = splitstring[0]*60*60;
+            let minutesec = splitstring[1]*60;
+            let total = hoursecs+minutesec;
+            totalsecs += total;
+
+            if (lastdaynumber == currentdaynumber) {
+                let datapoint = {
+                    x: date,
+                    y: total
+                }
+                dataset.push(datapoint);
+                lastdaynumber++;
+            }
+
+        });
+
+        let firstrun = false;
+        let orginalstartmonthvalue = startmonth;
+        let difference = endmonth.diff(orginalstartmonthvalue, "days")+1;
+        for (let i = 0; i < difference; i++) {
+            if (!firstrun) {
+                let labelpoint = [startmonth.format("dd"), startmonth.format("DD.MM")];
+                label.push(labelpoint);
+                firstrun = true;
+            } else {
+                let labelpoint = [startmonth.add(1, "days").format("dd"), startmonth.format("DD.MM")];
+                label.push(labelpoint);
+            }
+        }
+
+        let totalhours = Math.floor(totalsecs / 3600);
+        let totalminutes = Math.floor(totalsecs / 60)%60;
+        $("#currentmonthtotalhours").html(totalhours + "h " + totalminutes + "m");
+
+        var chartdata = {
+            labels: label,
+            datasets: [
+                {
+                    label: 'Tunnit',
+                    backgroundColor: 'rgba(89, 159, 217, 0.5)',
+                    borderColor: 'rgba(89, 159, 217, 1)',
+                    hoverBackgroundColor: 'rgba(204, 204, 204, 0.5)',
+                    hoverBorderColor: 'rgba(204, 204, 204, 1)',
+                    data: dataset
+                }
+            ]
+        };
+
+        let graph = $("#currentmonth");
+        let heightRatio = 1.5;
+        graph.height = graph.width * heightRatio;
+
+        let barGraph = new Chart(graph, {
+            type: "bar",
+            data: chartdata,
+            options: {
+                tooltips: {
+                    mode: "index",
+                    callbacks: {
+                        title: function(tooltipItem, data) {
+                            let date = data.datasets[0].data[tooltipItem[0].index].x;
+                            date.locale("fi");
+                            return date.format("dddd DD. MMMM gggg");
+                        },
+                        label: function(tooltipItem, data) {
+                            let totalSeconds = tooltipItem.value;
+                            let hours = Math.floor(totalSeconds / 3600);
+                            let minutes = Math.floor(totalSeconds / 60)%60;
+                            if (minutes == 0) {
+                                minutes = "00";
+                            }
+
+                            var label = data.datasets[tooltipItem.datasetIndex].label || '';
+                            return label + ": " + hours + ":" + minutes;
+                        }
+                    },
+                    titleFontSize: 16
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            stepSize: 1800,
+                            beginAtZero: true,
+                            callback: function(label, index, labels) {
+                                return formatTime(label);
+                            }
+                        },
+                        scaleLabel: {
+							display: true,
+							labelString: 'Tunnit'
+						}
+                    }]
+                }
+            }
+        });
+    }, "json");
+
+    var curyearstr = moment().format("YYYY");
+    var previousyearstr = moment().subtract(1, "year").format("YYYY");
+
+    $("#currentyear").html(curyearstr);
+    $("#previousyear").html(previousyearstr);
 
     $.get("api/jsonApi.php?mode=workday&action=view&id=between&start="+curyearstr+"-01-01&end="+curyearstr+"-12-31", function(data) {
         let dataset = [];
