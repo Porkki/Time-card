@@ -1,20 +1,4 @@
 $(document).ready(function() {
-    function formatTime(secs)
-    {
-        var hours = Math.floor(secs / (60 * 60));
-    
-        var divisor_for_minutes = secs % (60 * 60);
-        var minutes = Math.floor(divisor_for_minutes / 60);
-    
-        if (minutes == 0) {
-            minutes = "00";
-        }
-
-        var divisor_for_seconds = divisor_for_minutes % 60;
-        var seconds = Math.ceil(divisor_for_seconds);
-    
-        return hours + ":" + minutes;
-    }
     moment.locale("fi");
     var startweek = moment().startOf("week");
     var endweek = moment().endOf("week");
@@ -22,120 +6,21 @@ $(document).ready(function() {
     var startweekstr = startweek.format("YYYY-MM-DD");
     var endweekstr = endweek.format("YYYY-MM-DD");
 
-    $.get("api/jsonApi.php?mode=workday&action=view&id=between&start="+startweekstr+"&end="+endweekstr, function(data) {
-        let label = [];
-        let dataset = [];
-        let totalsecs = 0;
-        let lastdaynumber = 1;
-
-        data.forEach(function(item) {
-
-            let date = moment(item.date);
-            let currentdaynumber = parseInt(date.format("d"));
-
-            // Push 0 when there is skipped days in data
-            while (lastdaynumber < currentdaynumber) {
-                let emptydate = moment(date).date(lastdaynumber);
-                let datapoint = {
-                    x: emptydate,
-                    y: 0
-                }
-                dataset.push(datapoint);
-                lastdaynumber++;
-            }
-
-            let timestring = item.total_time;
-            let splitstring = timestring.split(":");
-
-            let hoursecs = splitstring[0]*60*60;
-            let minutesec = splitstring[1]*60;
-            let total = hoursecs+minutesec;
-            totalsecs += total;
-
-            if (lastdaynumber == currentdaynumber) {
-                let datapoint = {
-                    x: date,
-                    y: total
-                }
-                dataset.push(datapoint);
-                lastdaynumber++;
-            }
-        });
-
-        let totalhours = Math.floor(totalsecs / 3600);
-        let totalminutes = Math.floor(totalsecs / 60)%60;
-        $("#currentweektotalhours").html(totalhours + "h " + totalminutes + "m");
-
-        var chartdata = {
-            labels: [
-                ["Maanantai", startweek.format("DD.MM")], 
-                ["Tiistai", startweek.add(1, "days").format("DD.MM")], 
-                ["Keskiviikko", startweek.add(1, "days").format("DD.MM")], 
-                ["Torstai", startweek.add(1, "days").format("DD.MM")], 
-                ["Perjantai", startweek.add(1, "days").format("DD.MM")], 
-                ["Lauantai", startweek.add(1, "days").format("DD.MM")], 
-                ["Sunnuntai", startweek.add(1, "days").format("DD.MM")]
-            ],
-            datasets: [
-                {
-                    label: 'Tunnit',
-                    backgroundColor: 'rgba(89, 159, 217, 0.5)',
-                    borderColor: 'rgba(89, 159, 217, 1)',
-                    hoverBackgroundColor: 'rgba(204, 204, 204, 0.5)',
-                    hoverBorderColor: 'rgba(204, 204, 204, 1)',
-                    data: dataset
-                }
-            ]
-        };
-
-        let graph = $("#currentweek");
-        let heightRatio = 1.5;
-        graph.height = graph.width * heightRatio;
-
-        let barGraph = new Chart(graph, {
-            type: "bar",
-            data: chartdata,
-            options: {
-                tooltips: {
-                    mode: "index",
-                    callbacks: {
-                        title: function(tooltipItem, data) {
-                            let date = data.datasets[0].data[tooltipItem[0].index].x;
-                            date.locale("fi");
-                            return date.format("dddd DD. MMMM gggg");
-                        },
-                        label: function(tooltipItem, data) {
-                            let totalSeconds = tooltipItem.value;
-                            let hours = Math.floor(totalSeconds / 3600);
-                            let minutes = Math.floor(totalSeconds / 60)%60;
-                            if (minutes == 0) {
-                                minutes = "00";
-                            }
-
-                            var label = data.datasets[tooltipItem.datasetIndex].label || '';
-                            return label + ": " + hours + ":" + minutes;
-                        }
-                    },
-                    titleFontSize: 16
-                },
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            stepSize: 1800,
-                            beginAtZero: true,
-                            callback: function(label, index, labels) {
-                                return formatTime(label);
-                            }
-                        },
-                        scaleLabel: {
-							display: true,
-							labelString: 'Tunnit'
-						}
-                    }]
-                }
-            }
-        });
-    }, "json");
+    weekGraph(startweekstr, endweekstr);
+    $("#prevweek").click(function(){
+        startweek.subtract(1, "week");
+        endweek.subtract(1, "week");
+        startweekstr = startweek.format("YYYY-MM-DD");
+        endweekstr = endweek.format("YYYY-MM-DD");
+        weekGraph(startweekstr, endweekstr);
+    });
+    $("#nextweek").click(function(){
+        startweek.add(1, "week");
+        endweek.add(1, "week");
+        startweekstr = startweek.format("YYYY-MM-DD");
+        endweekstr = endweek.format("YYYY-MM-DD");
+        weekGraph(startweekstr, endweekstr);
+    });
 
     var startmonth = moment().startOf("month");
     var endmonth = moment().endOf("month");
@@ -489,3 +374,170 @@ $(document).ready(function() {
 
     
 });
+
+function formatTime(secs)
+{
+    var hours = Math.floor(secs / (60 * 60));
+
+    var divisor_for_minutes = secs % (60 * 60);
+    var minutes = Math.floor(divisor_for_minutes / 60);
+
+    if (minutes == 0) {
+        minutes = "00";
+    }
+
+    var divisor_for_seconds = divisor_for_minutes % 60;
+    var seconds = Math.ceil(divisor_for_seconds);
+
+    return hours + ":" + minutes;
+}
+
+var barGraph;
+
+function weekGraph(start, end) {
+    let date = moment(start);
+    let weeknumber = parseInt(date.format("W"));
+    let yearnumber = parseInt(date.format("YYYY"));
+
+    let curdate = moment();
+    let curweeknumber = parseInt(curdate.format("W"));
+    let curyearnumber = parseInt(curdate.format("YYYY"));
+
+    if (yearnumber == curyearnumber) {
+        let weekDifference = curweeknumber - weeknumber;
+        if (weeknumber == curweeknumber) {
+            $("#weekinfo").html("Kuluvan viikon tunnit (Viikko " + weeknumber + ")");
+        } else if (weeknumber < curweeknumber) {
+            if (weekDifference == 1) {
+                $("#weekinfo").html("Edellisen viikon tunnit (Viikko " + weeknumber + ")");
+            } else {
+                $("#weekinfo").html("Viikko " + weeknumber + " tunnit");
+            }
+            
+        } else {
+            $("#weekinfo").html("Viikko " + weeknumber + " tunnit");
+        }
+    } else if (yearnumber < curyearnumber) {
+        $("#weekinfo").html("Viikko " + weeknumber + " tunnit" + " (Vuosi " + yearnumber + ")");
+    }
+
+    if (barGraph) {
+        barGraph.destroy();
+    }
+    
+    $.get("api/jsonApi.php?mode=workday&action=view&id=between&start="+start+"&end="+end, function(data) {
+        let label = [];
+        let dataset = [];
+        let totalsecs = 0;
+        let lastdaynumber = 1;
+
+        data.forEach(function(item) {
+
+            let date = moment(item.date);
+            let currentdaynumber = parseInt(date.format("d"));
+
+            // Push 0 when there is skipped days in data
+            while (lastdaynumber < currentdaynumber) {
+                let emptydate = moment(date).date(lastdaynumber);
+                let datapoint = {
+                    x: emptydate,
+                    y: 0
+                }
+                dataset.push(datapoint);
+                lastdaynumber++;
+            }
+
+            let timestring = item.total_time;
+            let splitstring = timestring.split(":");
+
+            let hoursecs = splitstring[0]*60*60;
+            let minutesec = splitstring[1]*60;
+            let total = hoursecs+minutesec;
+            totalsecs += total;
+
+            if (lastdaynumber == currentdaynumber) {
+                let datapoint = {
+                    x: date,
+                    y: total
+                }
+                dataset.push(datapoint);
+                lastdaynumber++;
+            }
+        });
+
+        let totalhours = Math.floor(totalsecs / 3600);
+        let totalminutes = Math.floor(totalsecs / 60)%60;
+        $("#currentweektotalhours").html(totalhours + "h " + totalminutes + "m");
+
+        var chartdata = {
+            labels: [
+                ["Maanantai", date.format("DD.MM")], 
+                ["Tiistai", date.add(1, "days").format("DD.MM")], 
+                ["Keskiviikko", date.add(1, "days").format("DD.MM")], 
+                ["Torstai", date.add(1, "days").format("DD.MM")], 
+                ["Perjantai", date.add(1, "days").format("DD.MM")], 
+                ["Lauantai", date.add(1, "days").format("DD.MM")], 
+                ["Sunnuntai", date.add(1, "days").format("DD.MM")]
+            ],
+            datasets: [
+                {
+                    label: 'Tunnit',
+                    backgroundColor: 'rgba(89, 159, 217, 0.5)',
+                    borderColor: 'rgba(89, 159, 217, 1)',
+                    hoverBackgroundColor: 'rgba(204, 204, 204, 0.5)',
+                    hoverBorderColor: 'rgba(204, 204, 204, 1)',
+                    data: dataset
+                }
+            ]
+        };
+
+        let graph = $("#currentweek");
+        let heightRatio = 1.5;
+        graph.height = graph.width * heightRatio;
+
+        barGraph = new Chart(graph, {
+            type: "bar",
+            data: chartdata,
+            options: {
+                tooltips: {
+                    mode: "index",
+                    callbacks: {
+                        title: function(tooltipItem, data) {
+                            let date = data.datasets[0].data[tooltipItem[0].index].x;
+                            date.locale("fi");
+                            return date.format("dddd DD. MMMM gggg");
+                        },
+                        label: function(tooltipItem, data) {
+                            let totalSeconds = tooltipItem.value;
+                            let hours = Math.floor(totalSeconds / 3600);
+                            let minutes = Math.floor(totalSeconds / 60)%60;
+                            if (minutes == 0) {
+                                minutes = "00";
+                            }
+
+                            var label = data.datasets[tooltipItem.datasetIndex].label || '';
+                            return label + ": " + hours + ":" + minutes;
+                        }
+                    },
+                    titleFontSize: 16
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            stepSize: 1800,
+                            beginAtZero: true,
+                            callback: function(label, index, labels) {
+                                return formatTime(label);
+                            }
+                        },
+                        scaleLabel: {
+							display: true,
+							labelString: 'Tunnit'
+						}
+                    }]
+                }
+            }
+        });
+        barGraph.update();
+    }, "json");
+}

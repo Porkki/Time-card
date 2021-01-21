@@ -50,7 +50,18 @@ include_once __DIR__ . "./models/company.php";
                         </div>
                         <div class="w-100"></div>
                         <div class="col-lg">
-                            <small class="text-muted"><b>Kuluvan viikon tunnit</b></small>
+                            <div class="col-lg">
+                                <div class="row">
+                                    <div class="col-4 p-0">
+                                        <small class="text-muted"><b><span id="weekinfo"></span></b></small>
+                                    </div>
+                                    <div class="col-2 ml-auto p-0 align-self-end">
+                                        <button id="prevweek" class="btn btn-primary"><i class="fas fa-angle-double-left"></i></button>
+                                        <button id="nextweek" class="btn btn-primary"><i class="fas fa-angle-double-right"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <canvas id="currentweek" class="col-md"></canvas>
                             <p class="text-center text-muted">Tunnit yhteensä: <span id="currentweektotalhours"></span></p>
                         </div>
