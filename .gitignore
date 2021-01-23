@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/composer
-# Edit at https://www.toptal.com/developers/gitignore?templates=composer
+# Created by https://www.toptal.com/developers/gitignore/api/composer,visualstudiocode
+# Edit at https://www.toptal.com/developers/gitignore?templates=composer,visualstudiocode
 
 ### Composer ###
 composer.phar
@@ -9,4 +9,15 @@ composer.phar
 # You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
 # composer.lock
 
-# End of https://www.toptal.com/developers/gitignore/api/composer
+### VisualStudioCode ###
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+*.code-workspace
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+.ionide
+
+# End of https://www.toptal.com/developers/gitignore/api/composer,visualstudiocode
