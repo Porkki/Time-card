@@ -21,8 +21,8 @@ $(document).ready(function() {
                 .append($("<td>").text(is_client))
                 .append($("<td>").attr("name","created_user_id").text(value.created_user_id))
                 .append($("<td>")
-                    .append($("<a href='updatecompany.php?id=" + value.id + "' title='Muokkaa yritystä' data-toggle='tooltip'><i class='fas fa-edit pr-2 text-success'></i></a>"))
-                    .append($("<a href='#' class='open-removeconfirm' title='Poista yritys' data-toggle='modal' data-target='#removeConfirm' data-name='" + value.name + "' data-id='" + value.id + "'><i class='fas fa-trash text-danger'></i></a>"))
+                    .append($("<a href='updatecompany.php?id=" + value.id + "' title='Muokkaa yritystä' data-toggle='tooltip'><i class='fas fa-edit pe-2 text-success'></i></a>"))
+                    .append($("<a href='#' class='open-removeconfirm' title='Poista yritys' data-bs-toggle='modal' data-bs-target='#removeConfirm' data-name='" + value.name + "' data-id='" + value.id + "'><i class='fas fa-trash text-danger'></i></a>"))
                 )
             );
         })

@@ -21,7 +21,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION[
         <div class="container-fluid my-2">
             <div class="row g-0">
                 <?php include "scripts/include/nav.php"; ?>
-                <div class="box-shadow col-md w-100 border bg-white pl-3">
+                <div class="box-shadow col-md-10 border bg-white p-2">
                     <h1>Muokkaa tai poista käyttäjiä</h1>
                     <div class="table-responsive">
                         <table id="users" class="table table-striped table-hover w-100">
@@ -43,64 +43,58 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION[
                     <p>Löydetty <span id="numberofusers">0</span> käyttäjää.</p>
                 </div>
             </div>
-            <div class="modal fade" id="removeConfirm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="removeConfirmLabel">Varoitus</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            Oletko varma että haluat poistaa käyttäjän <span id=username>e</span>?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Peruuta</button>
-                            <a href="#" id="ahrefremoveuser" class="btn btn-danger">Poista</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Start of user action modals -->
-            <div class="modal fade" id="doneModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="doneModalLabel">Ilmoitus</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            Käyttäjä poistettu onnistuneesti!
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal fade" id="unsuccessfulModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="unsuccessfulModalLabel">Ilmoitus</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            Käyttäjän poisto epäonnistui jostain syystä, ota yhteys asiakaspalveluun.
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- End of user action modals -->
         </div>
+        <!-- Start of user action modals -->
+        <div class="modal fade" id="removeConfirm" tabindex="-1"  >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="removeConfirmLabel">Varoitus</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Oletko varma että haluat poistaa käyttäjän <span id=username>e</span>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Peruuta</button>
+                        <a href="#" id="ahrefremoveuser" class="btn btn-danger">Poista</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="doneModal" tabindex="-1"  >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="doneModalLabel">Ilmoitus</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Käyttäjä poistettu onnistuneesti!
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="unsuccessfulModal" tabindex="-1"  >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="unsuccessfulModalLabel">Ilmoitus</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </div>
+                    <div class="modal-body">
+                        Käyttäjän poisto epäonnistui jostain syystä, ota yhteys asiakaspalveluun.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of user action modals -->
 
         <!-- Page function scripts -->
         <?php include "scripts/include/scripts.php"; ?>

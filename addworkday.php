@@ -66,39 +66,35 @@ date_default_timezone_set('Europe/Helsinki');
         </div>
         
         <!-- Start of user action modals -->
-        <div class="modal fade" id="doneModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+        <div class="modal fade" tabindex="-1" id="doneModal">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="doneModalLabel">Ilmoitus</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <h5 class="modal-title">Ilmoitus</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Työpäivä lisätty onnistuneesti!
+                        <p>Työpäivä lisätty onnistuneesti!</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
+                        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Ok</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="unsuccessfulModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+        <div class="modal fade" tabindex="-1" id="unsuccessfulModal">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="unsuccessfulModalLabel">Ilmoitus</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <h5 class="modal-title">Ilmoitus</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Työpäivän lisäys epäonnistui.<br>
+                        <p>Työpäivän lisäys epäonnistui.</p>
                         <span id="errormessage"></span>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Ok</button>
                     </div>
                 </div>
             </div>

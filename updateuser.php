@@ -70,12 +70,12 @@
                     <hr>
                     <p><b>Huom!</b> jos muutat salasana kenttää niin tällöin myös muuttuu käyttäjän salasana. Jätä kenttä tyhjäksi jos et halua muuttaa käyttäjän salasanaa.</p>
                     <!-- Start of user action modals -->
-                    <div class="modal fade" id="doneModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="doneModal" tabindex="-1"  >
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="doneModalLabel">Ilmoitus</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <button type="button"  class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
@@ -83,17 +83,17 @@
                                     Käyttäjä päivitetty onnistuneesti!
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
+                                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Ok</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="unsuccessfulModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="unsuccessfulModal" tabindex="-1"  >
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="unsuccessfulModalLabel">Ilmoitus</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <button type="button"  class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
@@ -102,7 +102,7 @@
                                     <span id="errormessage"></span>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Ok</button>
                                 </div>
                             </div>
                         </div>

@@ -16,8 +16,8 @@ $(document).ready(function() {
                 .append($("<td>").text(value.username))
                 .append($("<td>").attr("name","user_company_id").text(value.user_company_id))
                 .append($("<td>")
-                    .append($("<a href='updateuser.php?id=" + value.id + "' title='Muokkaa käyttäjää' data-toggle='tooltip'><i class='fas fa-edit pr-2 text-success'></i></a>"))
-                    .append($("<a href='#' class='open-removeconfirm' title='Poista käyttäjä' data-toggle='modal' data-target='#removeConfirm' data-name='" + value.username + "' data-id='" + value.id + "'><i class='fas fa-trash text-danger'></i></a>"))
+                    .append($("<a href='updateuser.php?id=" + value.id + "' title='Muokkaa käyttäjää' data-toggle='tooltip'><i class='fas fa-edit pe-2 text-success'></i></a>"))
+                    .append($("<a href='#' class='open-removeconfirm' title='Poista käyttäjä' data-bs-toggle='modal' data-bs-target='#removeConfirm' data-name='" + value.username + "' data-id='" + value.id + "'><i class='fas fa-trash text-danger'></i></a>"))
                 )
             );
         })
