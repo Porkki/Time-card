@@ -461,7 +461,13 @@ function weekGraph(start, end) {
                     y: total
                 }
                 dataset.push(datapoint);
-                lastdaynumber++;
+                // Moment.js day numbers go from 0 to 6, where 0 is Sunday and 6 is Saturday
+                if (lastdaynumber < 6) {
+                    lastdaynumber++;
+                } else {
+                    lastdaynumber = 0;
+                }
+                
             }
         });
 
