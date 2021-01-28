@@ -12,11 +12,11 @@ body {
 
 /* Start of Navigation styling */
 
-.active {
+.activenav {
     background-color: #4CAF50;
 }
 
-.active > a {
+.activenav > a {
     color: white;
 }
 
