@@ -13,27 +13,17 @@
 
 <?php
 /**
- * Json api file
+ * TODO: complete api document
+ * Usage of this api:
+ * ------------------------------------------------------------------------------------
+ * Get workdays between two dates:
+ * api/jsonApi.php?mode=workday&action=viewbetween&id=1&start=2021-01-01&end=2021-01-31
  * 
- * Get actions:
- *  mode:
- *      user            DONE
- *      workday         DONE
- *      company         DONE
- *  action
- *      view            DONE USER COMPANY WORKDAY
- *          id:         DONE USER COMPANY WORKDAY
- *              id      DONE USER COMPANY WORKDAY
- *              all     DONE USER COMPANY WORKDAY
- *      remove          DONE USER COMPANY
- *          id:         DONE USER COMPANY
- *              id      DONE USER COMPANY
- * 
- * POST ACTIONS:
- *  update:
- *      updateuser  DONE
- *  create:
- *      createuser  DONE
+ * mode: workday
+ * action: viewbetween
+ * id: userid
+ * start: yyyy-mm-dd
+ * end: yyyy-mm-dd
  */
 include_once __DIR__ . "/../collection/userCollection.php";
 include_once __DIR__ . "/../collection/companyCollection.php";
@@ -94,15 +84,16 @@ if (isset($_GET["mode"]) && !empty(trim($_GET["mode"]))) {
                             echo getAllUserWorkdaysAsJson($_GET["userid"]);
                             break;
                         }
-                    case "between":
-                        echo getWorkdaysBetweenDates($_GET["start"], $_GET["end"]);         // MIETI MITEN VOISI JÄRJESTELLÄ PAREMMIN GET PARAMETRIT
-                        break;
                     default:
                         echo getSingleWorkdayAsJson($_GET["id"]);
                 }
                 break;
+            case "viewbetween":
+                echo getWorkdaysBetweenDates($_GET["id"], $_GET["start"], $_GET["end"]);
+                break;
             case "remove":
                 echo removeWorkday($_GET["id"]);
+                break;
         }
     }
 }
@@ -155,12 +146,17 @@ function getAllUserWorkdaysAsJson($id) {
  * $start and $end should be in mysql date format YYYY-MM-DD
  */
 
-function getWorkdaysBetweenDates($start, $end) {
+function getWorkdaysBetweenDates($id, $start, $end) {
     if (empty($start) || empty($end)) {
         return json_encode(array("error" => "Alku- tai lopetuspvm on tyhjä."), JSON_UNESCAPED_UNICODE);
     }
 
-    $collection = workdayCollection::getWorkdaysBetweenDates($_SESSION["id"],$start, $end);
+    $checkUserObject = User::withID(trim($id));
+    if (!empty($checkUserObject->error)) {
+        return json_encode(array("error" => "Syötetyllä ID:llä ei löydy käyttäjää."), JSON_UNESCAPED_UNICODE);
+    }
+
+    $collection = workdayCollection::getWorkdaysBetweenDates($id, $start, $end);
     return $collection->getJson();
 }
 

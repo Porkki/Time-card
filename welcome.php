@@ -23,14 +23,14 @@ include_once __DIR__ . "./models/company.php";
         <div class="container-fluid my-2">
             <div class="row g-0">
                 <?php include "scripts/include/nav.php"; ?>
-                <div class="box-shadow col-md-10 border bg-white p-2">
+                <div class="box-shadow col-12 col-sm-12 col-md-10 border bg-white p-2">
                     <div class="row">
                         <div class="col">
                             <?php
                             $user = User::withID(trim($_SESSION["id"]));
                             $userCompany = Company::withID($user->user_company_id);
                             $companylogoPath = "img/company_logos/$user->user_company_id.png";
-
+                            echo "<div class='invisible d-none' id='userid'>$user->id</div>";
                             if (file_exists($companylogoPath)) {
                                 echo "<img class='mx-auto img-fluid d-block' src='$companylogoPath'>";
                             } else {

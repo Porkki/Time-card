@@ -1,4 +1,6 @@
+var id;
 $(document).ready(function() {
+    id = $("#userid").text();
     moment.locale("fi");
     var startweek = moment().startOf("week");
     var endweek = moment().endOf("week");
@@ -28,7 +30,7 @@ $(document).ready(function() {
     var startmonthstr = startmonth.format("YYYY-MM-DD");
     var endmonthstr = endmonth.format("YYYY-MM-DD");
 
-    $.get("api/jsonApi.php?mode=workday&action=view&id=between&start="+startmonthstr+"&end="+endmonthstr, function(data) {
+    $.get("api/jsonApi.php?mode=workday&action=viewbetween&id="+id+"&start="+startmonthstr+"&end="+endmonthstr, function(data) {
         let label = [];
         let dataset = [];
         let totalsecs = 0;
@@ -156,7 +158,7 @@ $(document).ready(function() {
     $("#currentyear").html(curyearstr);
     $("#previousyear").html(previousyearstr);
 
-    $.get("api/jsonApi.php?mode=workday&action=view&id=between&start="+curyearstr+"-01-01&end="+curyearstr+"-12-31", function(data) {
+    $.get("api/jsonApi.php?mode=workday&action=viewbetween&id="+id+"&start="+curyearstr+"-01-01&end="+curyearstr+"-12-31", function(data) {
         let dataset = [];
         let monthtotal = 0; // Keep total seconds of the current month 
         var curmonth = 1;  // Keep track at which month we are in currently
@@ -264,7 +266,7 @@ $(document).ready(function() {
         });
     }, "json");
 
-    $.get("api/jsonApi.php?mode=workday&action=view&id=between&start="+previousyearstr+"-01-01&end="+previousyearstr+"-12-31", function(data) {
+    $.get("api/jsonApi.php?mode=workday&action=viewbetween&id="+id+"&start="+previousyearstr+"-01-01&end="+previousyearstr+"-12-31", function(data) {
         let dataset = [];
         let monthtotal = 0; // Keep total seconds of the current month 
         var curmonth = 1;  // Keep track at which month we are in currently
@@ -425,7 +427,7 @@ function weekGraph(start, end) {
         barGraph.destroy();
     }
     
-    $.get("api/jsonApi.php?mode=workday&action=view&id=between&start="+start+"&end="+end, function(data) {
+    $.get("api/jsonApi.php?mode=workday&action=viewbetween&id="+id+"&start="+start+"&end="+end, function(data) {
         let label = [];
         let dataset = [];
         let totalsecs = 0;
