@@ -13,17 +13,87 @@
 
 <?php
 /**
- * TODO: complete api document
  * Usage of this api:
- * ------------------------------------------------------------------------------------
+ * Every entry has an example url in it to see how you can utilize this api
+ * ------------------------------USER ACTIONS--------------------------------
+ * --
+ * Id is the user id in the database
+ * --
+ * 
+ * List every user and their data from database:
+ * Deny employees from accessing
+ * Allows employers only list their own employees
+ * Allow admin list every user in database
+ * api/jsonApi.php?mode=user&action=view&id=all
+ * 
+ * Get data only from one user:
+ * Deny employee access
+ * Allows employers only access their own employees
+ * Allow admin access everything
+ * api/jsonApi.php?mode=user&action=view&id=1
+ * 
+ * Remove user:
+ * Deny employee access
+ * Allow employers remove only their own employees
+ * Allow admin remove anybody
+ * api/jsonApi.php?mode=user&action=remove&id=1
+ * -----------------------------COMPANY ACTIONS------------------------------
+ * --
+ * Id is the company id in the database
+ * --
+ * 
+ * List every company and their data from database:
+ * Deny employees from accessing
+ * Allows employers only list their own company
+ * Allow admin list every company in database
+ * api/jsonApi.php?mode=company&action=view&id=all
+ * 
+ * Get data only from one company:
+ * Deny access from employees and employers
+ * Allow admin to get data from id
+ * api/jsonApi.php?mode=company&action=view&id=5
+ * 
+ * Get user count in company:
+ * Deny access from employees and employers
+ * Allow admin to get data from id
+ * api/jsonApi.php?mode=company&action=viewusers&id=5
+ * 
+ * Remove company:
+ * Deny access from employees and employers
+ * Allow only admin to remove companies
+ * api/jsonApi.php?mode=user&action=remove&id=1
+ * ----------------------------WORKDAY ACTIONS-------------------------------
+ * List every workday from the user who is logged in:
+ * Allow access to anyone who is logged in
+ * api/jsonApi.php?mode=workday&action=view&id=all
+ * 
+ * List every workday from user id:
+ * Deny access from employees
+ * Allow employer access to their own and employees data
+ * Allow admin access to everything
+ * api/jsonApi.php?mode=workday&action=view&id=all&userid=1
+ * 
+ * Get single workday from workday id:
+ * Allow employee to access only their own workdays
+ * Allow employer to access only their own employees
+ * Allow admin access to everything
+ * api/jsonApi.php?mode=workday&action=view&id=2
+ * 
  * Get workdays between two dates:
+ * Allow employee to access only their own workdays
+ * Allow employer to access only their own employees
+ * Allow admin access to everything
  * api/jsonApi.php?mode=workday&action=viewbetween&id=1&start=2021-01-01&end=2021-01-31
  * 
- * mode: workday
- * action: viewbetween
  * id: userid
  * start: yyyy-mm-dd
  * end: yyyy-mm-dd
+ * 
+ * Remove workday:
+ * Allow employees to remove only their own workdays
+ * Allow employer only remove their own employees workdays
+ * Allow admin to remove anything
+ * api/jsonApi.php?mode=workday&action=remove&id=1
  */
 include_once __DIR__ . "/../collection/userCollection.php";
 include_once __DIR__ . "/../collection/companyCollection.php";
@@ -62,7 +132,7 @@ if (isset($_GET["mode"]) && !empty(trim($_GET["mode"]))) {
             case "viewusers":
                 switch ($_GET["id"]) {
                     default:
-                        echo getCompanyUsers($_GET["id"]);
+                        echo getCompanyUserCount($_GET["id"]);
                 }
                 break;
             case "remove":
@@ -132,14 +202,38 @@ function getAllWorkdaysAsJson() {
     return $collection->getJson();
 }
 
-// TODO permission check
+/**
+ * Returns all workdays from supplied id, does permission check to only allow
+ * employers to search their own employees
+ */
 function getAllUserWorkdaysAsJson($id) {
     if (!is_numeric($id)) {
         return json_encode(array("error" => "Syötetty ID ei ole numero."), JSON_UNESCAPED_UNICODE);
     }
 
-    $collection = workdayCollection::getAllWorkdaysFromUserID(trim($id));
-    return $collection->getJson();
+    if ($_SESSION["class"] == "employee") {
+        // Log this
+        return json_encode(array("error" => "Sinulla ei ole oikeuksia käyttää tätä toimintoa."), JSON_UNESCAPED_UNICODE);
+    } else if ($_SESSION["class"] == "employer") {
+        $employerUserObject = User::withID($_SESSION["id"]);
+        $targetUserObject = User::withID(trim($id));
+
+        if (empty($employerUserObject->error) && empty($targetUserObject->error)) {
+            if ($employerUserObject->user_company_id == $targetUserObject->user_company_id) {
+                $collection = workdayCollection::getAllWorkdaysFromUserID(trim($id));
+                return $collection->getJson();
+            } else {
+                // LOG THIS
+                return json_encode(array("error" => "Sinulla ei ole oikeuksia katsoa kyseisen käyttäjän tietoja."), JSON_UNESCAPED_UNICODE);
+            }
+        } else {
+            return json_encode(array("error" => "Syötetyllä ID:llä ei löydy käyttäjää."), JSON_UNESCAPED_UNICODE);
+        }
+    } else if ($_SESSION["class"] == "admin") {
+        $collection = workdayCollection::getAllWorkdaysFromUserID(trim($id));
+        return $collection->getJson();
+    }
+
 }
 
 /**
@@ -156,8 +250,28 @@ function getWorkdaysBetweenDates($id, $start, $end) {
         return json_encode(array("error" => "Syötetyllä ID:llä ei löydy käyttäjää."), JSON_UNESCAPED_UNICODE);
     }
 
-    $collection = workdayCollection::getWorkdaysBetweenDates($id, $start, $end);
-    return $collection->getJson();
+    if ($_SESSION["class"] == "employee") {
+        if ($_SESSION["id"] == $id) {
+            $collection = workdayCollection::getWorkdaysBetweenDates($id, $start, $end);
+            return $collection->getJson();
+        } else {
+            // Log this
+            return json_encode(array("error" => "Sinulla ei ole oikeuksia katsoa kyseisen käyttäjän tietoja."), JSON_UNESCAPED_UNICODE);
+        }
+    } else if ($_SESSION["class"] == "employer") {
+        $employerUserObject = User::withID($_SESSION["id"]);
+
+        if ($employerUserObject->user_company_id == $checkUserObject->user_company_id) {
+            $collection = workdayCollection::getWorkdaysBetweenDates($id, $start, $end);
+            return $collection->getJson();
+        } else {
+            // LOG THIS
+            return json_encode(array("error" => "Sinulla ei ole oikeuksia katsoa kyseisen käyttäjän tietoja."), JSON_UNESCAPED_UNICODE);
+        }
+    } else if ($_SESSION["class"] == "admin") {
+        $collection = workdayCollection::getWorkdaysBetweenDates($id, $start, $end);
+        return $collection->getJson();
+    }
 }
 
 /**
@@ -198,7 +312,9 @@ function getSingleWorkdayAsJson($id) {
  * If user has employer class then return only company that is owned by him
  */
 function getAllCompaniesAsJson() {
-    if ($_SESSION["class"] == "employer") {
+    if ($_SESSION["class"] == "employee") {
+        return json_encode(array("error" => "Sinulla ei ole oikeuksia."), JSON_UNESCAPED_UNICODE);
+    } else if ($_SESSION["class"] == "employer") {
         $employerUserObject = User::withID($_SESSION["id"]);
         $companyObject = Company::withID($employerUserObject->user_company_id);
         return json_encode($companyObject, JSON_UNESCAPED_UNICODE);
@@ -218,13 +334,15 @@ function getSingleCompanyAsJson($id) {
     if ($_SESSION["class"] == "admin") {
         $companyObject = Company::withID(trim($id));
         return json_encode($companyObject, JSON_UNESCAPED_UNICODE);
+    } else {
+        return json_encode(array("error" => "Sinulla ei ole oikeuksia."), JSON_UNESCAPED_UNICODE);
     }
 }
 /**
  * Only admin can get data from id
  * Return count of employees in company, used in modify company page
  */
-function getCompanyUsers($companyid) {
+function getCompanyUserCount($companyid) {
     if ($_SESSION["class"] == "admin") {
         $collection = userCollection::getAllCompanyUsers($companyid);
         return json_encode(array("count" => count($collection)), JSON_UNESCAPED_UNICODE);
@@ -235,7 +353,9 @@ function getCompanyUsers($companyid) {
  * If user has employer class then return only employees that are under his company
  */
 function getAllUsersAsJson() {
-    if ($_SESSION["class"] == "employer") {
+    if ($_SESSION["class"] == "employee") {
+        return json_encode(array("error" => "Sinulla ei ole oikeuksia."), JSON_UNESCAPED_UNICODE);
+    } else if ($_SESSION["class"] == "employer") {
         $employerUserObject = User::withID($_SESSION["id"]);
         $collection = userCollection::getAllCompanyUsers($employerUserObject->user_company_id);
         return $collection->getJson();
@@ -252,7 +372,9 @@ function getSingleUserAsJson($id) {
         return json_encode(array("error" => "Syötetty ID ei ole numero."), JSON_UNESCAPED_UNICODE);
     }
     $userObject = User::withID(trim($id));
-    if ($_SESSION["class"] == "employer") {
+    if ($_SESSION["class"] == "employee") {
+        return json_encode(array("error" => "Sinulla ei ole oikeuksia."), JSON_UNESCAPED_UNICODE);
+    } else if ($_SESSION["class"] == "employer") {
         $employerUserObject = User::withID($_SESSION["id"]);
         if (empty($employerUserObject->error) && empty($userObject->error)) {
             if ($employerUserObject->user_company_id == $userObject->user_company_id) {
