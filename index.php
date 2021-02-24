@@ -17,7 +17,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
         <title>Kirjaudu sisään</title>
     </head>
     <body>
-        <div class="container w-auto m-auto mx-auto bg-white box-shadow p-3 animate">
+        <div class="container w-auto m-auto mx-auto bg-white box-shadow p-3 animate my-2">
             <img src="img/logo.png" class="mx-auto img-fluid d-block">
             <h1 class="text-center">Työajanseuranta</h1>
             <form id="login" method="POST">
@@ -29,6 +29,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                     <label for="psw"><b>Salasana</b></label>
                     <input type="password" class="form-control" placeholder="Syötä salasana" name="password" required>
                 </div>
+                <hr>
                 <button type="submit" value="submit" name="submit" class="btn btn-success w-100">Kirjaudu</button>
             </form>
         </div>
