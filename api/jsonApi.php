@@ -317,7 +317,11 @@ function getAllCompaniesAsJson() {
     } else if ($_SESSION["class"] == "employer") {
         $employerUserObject = User::withID($_SESSION["id"]);
         $companyObject = Company::withID($employerUserObject->user_company_id);
-        return json_encode($companyObject, JSON_UNESCAPED_UNICODE);
+        // Have to return array instead of object because the way how the adduser/updateuser.js 
+        // files are coded to work with both employer and admin class from the same file
+        // jQuery $.each expects results as array, not as in object
+        $companyArray[] = $companyObject;
+        return json_encode($companyArray, JSON_UNESCAPED_UNICODE);
     } else if ($_SESSION["class"] == "admin") {
         $collection = CompanyCollection::getAllCompanies();
         return $collection->getJson();
