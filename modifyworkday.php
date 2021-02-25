@@ -32,42 +32,38 @@ date_default_timezone_set('Europe/Helsinki');
                 <div class="box-shadow col-md-10 border bg-white p-2">
                     <h1>Muokkaa työpäivää</h1>
                     <hr>
-                    <form id="modifyworkday">
-                        <div class="form-group">
+                    <form id="modifyworkday" class="row g-3">
+                        <div class="col-12">
                             <label for="date">Päivämäärä</label>
-                            <input type="date" class="form-control" name="date" value="<?php echo date("Y-m-d"); ?>">
+                            <input type="date" class="form-control" name="date" id="date" value="<?php echo date("Y-m-d"); ?>">
                         </div>
-                        <div class="form-row">
-                            <div class="form-group col">
-                                <label for="starttime">Aloitusaika</label>
-                                <input type="datetime-local" class="form-control" name="starttime" value="<?php echo date("Y-m-d") . "T00:00"; ?>">
-                            </div>
-                            <div class="form-group col">
-                                <label for="endtime">Lopetusaika</label>
-                                <input type="datetime-local" class="form-control" name="endtime" value="<?php echo date("Y-m-d\TH:i"); ?>">
-                            </div>
-                            <div class="form-group col">
-                                <label for="breaktime">Tauko</label>
-                                <input type="time" class="form-control" name="breaktime" aria-describedby="breaktimeHelpBlock">
-                                <small id="breaktimeHelpBlock" class="form-text text-muted">
-                                hh:mm
-                                </small>
-                                <input type="hidden" class="form-control" name="id">
-                            </div>
+                        <div class="col-md-4">
+                            <label for="starttime">Aloitusaika</label>
+                            <input type="datetime-local" class="form-control" name="starttime" id="starttime" value="<?php echo date("Y-m-d") . "T00:00"; ?>">
                         </div>
-                        <div class="form-group">
+                        <div class="col-md-4">
+                            <label for="endtime">Lopetusaika</label>
+                            <input type="datetime-local" class="form-control" name="endtime" id="endtime" value="<?php echo date("Y-m-d\TH:i"); ?>">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="break">Tauko</label>
+                            <input type="time" class="form-control" name="breaktime">
+                        </div>
+                        <div class="col-12">
                             <label for="explanation">Selite</label>
                             <textarea class="form-control" name="explanation" rows="3" maxlength="250" aria-describedby="explanationHelpBlock"></textarea>
                             <small id="explanationHelpBlock" class="form-text text-muted">
                             Max 250 kirjainta.
                             </small>
                             <input type="hidden" class="form-control" name="postfrom" value="updateworkday">
+                            <input type="hidden" class="form-control" name="id">
                         </div>
-                        <div class="form-group" id="created">
-                            <p>Luotu: <span id="created"></span></p>
+                        <div class="col-12" id="created">
                         </div>
-                        <button type="button" id="cancel" class="btn btn-secondary">Peruuta</button>
-                        <button type="submit" class="btn btn-success">Muokkaa työpäivää</button>
+                        <div class="col-12">
+                            <button type="button" id="cancel" class="btn btn-secondary">Peruuta</button>
+                            <button type="submit" class="btn btn-success">Muokkaa työpäivää</button>
+                        </div>
                     </form>
                 </div>
             </div>
