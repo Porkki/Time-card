@@ -23,49 +23,47 @@
                 <div class="box-shadow col-md-10 border bg-white p-2">
                     <h1>Muokkaa käyttäjää</h1>
                     <hr>
-                    <form id="target" method="POST">
-                        <div class="form-row">
-                            <div class="form-group col">
-                                <label for="class"><b>Käyttäjäluokka</b></label>
-                                <select class=form-control name="class" required>
-                                    <?php if ($_SESSION["class"] == "admin") { ?>
-                                    <option value="admin">Ylläpitäjä</option>
-                                    <?php } ?>
-                                    <option value="employer">Työnantaja</option>
-                                    <option value="employee">Työntekijä</option>
-                                </select>
-                            </div>
-                            <div class="form-group col">
-                                <label for="user_company_id"><b>Yritys</b></label>
-                                <select class="form-control" id="user_company_id" name="user_company_id" required>
-                                </select>
-                            </div>
+                    <form id="target" class="row g-3">
+                        <div class="col-md-6">
+                            <label for="class"><b>Käyttäjäluokka</b></label>
+                            <select class=form-select name="class" required>
+                                <?php if ($_SESSION["class"] == "admin") { ?>
+                                <option value="admin">Ylläpitäjä</option>
+                                <?php } ?>
+                                <option value="employer">Työnantaja</option>
+                                <option value="employee" selected>Työntekijä</option>
+                            </select>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group col">
-                                <label for="firstname"><b>Etunimi</b></label>
-                                <input type="text" class="form-control" name="firstname" required>
-                            </div>
-                            <div class="form-group col">
-                                <label for="lastname"><b>Sukunimi</b></label>
-                                <input type="text" class="form-control" name="lastname" required>
-                            </div>
+                        <div class="col-md-6">
+                            <label for="user_company_id"><b>Yritys</b></label>
+                            <select class="form-select" id="user_company_id" name="user_company_id" required>
+                            </select>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group col">
-                                <label for="username"><b>Käyttäjätunnus</b></label>
-                                <input type="text" class="form-control" name="username" required>
-                            </div>
-                            <div class="form-group col">
-                                <label for="password"><b>Salasana</b></label>
-                                <input type="password" class="form-control" name="password" placeholder="Salasana">
-                                <input type="hidden" class="form-control" name="id">
-                                <input type="hidden" class="form-control" name="postfrom" value="updateuser">
-                            </div>
+
+                        <div class="col-md-6">
+                            <label for="firstname"><b>Etunimi</b></label>
+                            <input type="text" class="form-control" name="firstname" required>
                         </div>
-                        <hr>
-                        <button type="submit" value="submit" name="submit" class="btn btn-success">Päivitä</button>
-                        <a href="modifyuser.php" class="btn btn-danger">Peruuta</a>
+                        <div class="col-md-6">
+                            <label for="lastname"><b>Sukunimi</b></label>
+                            <input type="text" class="form-control" name="lastname" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="username"><b>Käyttäjätunnus</b></label>
+                            <input type="text" class="form-control" name="username" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="password"><b>Salasana</b></label>
+                            <input type="password" class="form-control" name="password" placeholder="Salasana">
+                            <input type="hidden" class="form-control" name="id">
+                            <input type="hidden" class="form-control" name="postfrom" value="updateuser">
+                        </div>
+                        <div class="col-12">
+                            <a href="modifyuser.php" class="btn btn-secondary">Peruuta</a>
+                            <button type="submit" value="submit" name="submit" class="btn btn-success">Päivitä</button>
+                        </div>
+                        
                     </form>
                     <hr>
                     <p><b>Huom!</b> jos muutat salasana kenttää niin tällöin myös muuttuu käyttäjän salasana. Jätä kenttä tyhjäksi jos et halua muuttaa käyttäjän salasanaa.</p>
