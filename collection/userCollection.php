@@ -35,9 +35,10 @@
         }
         protected function getCompanyUsers($company_id) {
             $db = new db();
-            $userquery = $db->query("SELECT * from users WHERE user_company_id=?", $company_id)->fetchAll();
+            $userquery = $db->query("SELECT u.id,u.username,u.class,u.firstname,u.lastname,u.user_company_id,c.company_name from users u 
+                                    LEFT JOIN company c on u.user_company_id = c.id WHERE user_company_id=?", $company_id)->fetchAll();
             foreach($userquery as $user) {
-                $userObj = new User($user["id"],$user["username"],$user["class"],$user["firstname"],$user["lastname"],$user["user_company_id"]);
+                $userObj = new User($user["id"],$user["username"],$user["class"],$user["firstname"],$user["lastname"],$user["company_name"]);
                 $this->addItem($userObj);
             }
             $db->close();
