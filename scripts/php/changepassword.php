@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo json_encode(array("message" => "Salasana päivitetty"), JSON_UNESCAPED_UNICODE);
             }
         } else {
-            echo json_encode(array("error" => "Salasanan täytyy olla yli 8 kirjainta pitkä."), JSON_UNESCAPED_UNICODE);
+            echo json_encode(array("error" => "Salasanan täytyy olla vähintään 8 kirjainta pitkä."), JSON_UNESCAPED_UNICODE);
         }
     } else {
         echo json_encode(array("error" => "Uudet salasanan ei täsmää."), JSON_UNESCAPED_UNICODE);
