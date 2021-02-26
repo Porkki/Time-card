@@ -411,6 +411,11 @@ function createUser() {
 
     $username = trim($_POST["username"]);
     $password = $_POST["password"];
+
+    if (strlen($password) <= 7) {
+        return json_encode(array("error" => "Salasanan täytyy olla vähintään 8 kirjainta pitkä."), JSON_UNESCAPED_UNICODE);
+    }
+
     $class = trim($_POST["class"]);
     $firstname = trim($_POST["firstname"]);
     $lastname = trim($_POST["lastname"]);
@@ -436,7 +441,9 @@ function updateUser() {
 
     $modifyUserObject->username = trim($_POST["username"]);
     if (!empty($_POST["password"])) {
-        $modifyUserObject->setPassword($password);
+        if (!$modifyUserObject->setPassword(trim($_POST["password"]))) {
+            return json_encode(array("error" => "Salasanan täytyy olla vähintään 8 kirjainta pitkä."), JSON_UNESCAPED_UNICODE);
+        }
     }
     $modifyUserObject->class = trim($_POST["class"]);
     $modifyUserObject->firstname = trim($_POST["firstname"]);
