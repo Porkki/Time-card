@@ -77,8 +77,8 @@
                             <input type="hidden" class="form-control" name="postfrom" value="updatecompany">
                         </div>
                         <div class="col-12">
+                            <a href="modifycompany.php" class="btn btn-secondary">Peruuta</a>
                             <button type="submit" value="submit" name="submit" class="btn btn-success">Päivitä</button>
-                            <a href="modifycompany.php" class="btn btn-danger">Peruuta</a>
                         </div>
                     </form>
                 </div>
