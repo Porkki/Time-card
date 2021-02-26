@@ -39,6 +39,20 @@
         }
 
         /**
+        * Creates new instance of User from id and includes password hash in the properties
+        *
+        * @param integer $id
+        *   ID of the user in database
+        * @return User
+        *   Returns User object with private password propertie
+        */
+        public static function withIDLoadPassword($id) {
+            $instance = new static();
+            $instance->loadByIDPassword($id);
+            return $instance;
+        }
+
+        /**
         * 
         * Creates new instance of User from username and password
         *
@@ -74,9 +88,35 @@
          * 
          * @param string $password
          *  New password in plaintext
+         * @return boolean
+         *  Returns true if password length is over 8 characters
          */
         public function setPassword($password) {
-            $this->password = password_hash($password, PASSWORD_DEFAULT);
+            if (strlen($password) > 7) {
+                $this->password = password_hash($password, PASSWORD_DEFAULT);
+                return true;
+            } else {
+                return false;
+            }
+            
+        }
+
+        /**
+         * Check does password match with the current one
+         * (Used at the password change page)
+         * Note: Can be used only if instance is created via construct (with password) or with static function withIDLoadPassword()
+         * 
+         * @param string $password
+         *  Password (in plaintext) to check
+         * @return boolean
+         *  Returns true if passwords match
+         */
+        public function checkPassword($password) {
+            if (password_verify($password, $this->password)) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         /**
@@ -143,6 +183,18 @@
             $db->close();
         }
 
+        // Same as above but includes password with it in the properties of this instance
+        protected function loadByIDPassword($id) {
+            $db = new db();
+            $row = $db->query("SELECT id, username, password, class, firstname, lastname, user_company_id from users WHERE id = ?", $id)->fetchArray();
+            if (!empty($row)) {
+                $this->fillPassword($row);
+            } else {
+                $this->error = "Syötetyllä ID:llä ei löydy käyttäjää.";
+            }
+            $db->close();
+        }
+
         protected function loadByUsernameAndPassword($username, $password) {
             $db = new db();
             $row = $db->query("SELECT id, username, password, firstname, lastname, class, user_company_id FROM users WHERE username = ?", $username)->fetchArray();
@@ -173,6 +225,16 @@
             $this->id = $row['id'];
             $this->username = $row['username'];
             $this->password = null;
+            $this->class = $row['class'];
+            $this->firstname = $row['firstname'];
+            $this->lastname = $row['lastname'];
+            $this->user_company_id = $row['user_company_id'];
+        }
+
+        protected function fillPassword(array $row) {
+            $this->id = $row['id'];
+            $this->username = $row['username'];
+            $this->password = $row['password'];
             $this->class = $row['class'];
             $this->firstname = $row['firstname'];
             $this->lastname = $row['lastname'];
