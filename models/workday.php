@@ -74,6 +74,11 @@
          *  Returns true if creation to database was succesful
          */
         public function createInstancetoDB() {
+            // If breaktime is empty, set it to 00:00:00
+            if (empty($this->html_break)) {
+                $this->html_break = "00:00:00";
+            }
+
             // Make sure that end time is greater than start time before creating database record
             $endtimedt = new DateTime($this->end_time);
             $starttimedt = new DateTime($this->start_time);
