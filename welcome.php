@@ -8,8 +8,8 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     exit;
 }
 
-include_once __DIR__ . "./models/user.php";
-include_once __DIR__ . "./models/company.php";
+include_once __DIR__ . "/models/user.php";
+include_once __DIR__ . "/models/company.php";
 ?>
 
 <!doctype html>
