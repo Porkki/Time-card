@@ -51,7 +51,7 @@ if ($_SESSION["class"] == "employee") {
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><i class="fas fa-cog fa-fw"></i> Asetukset</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-wrench fa-fw"></i> Vaihda salasana</a></li>
+                        <li><a class="dropdown-item <?php if ($path[2] == "changepassword.php") {echo('activenav');} else {echo('');}?>" href="changepassword.php"><i class="fas fa-wrench fa-fw"></i> Vaihda salasana</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
