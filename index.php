@@ -32,14 +32,6 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                 <div class="col-6 m-0">
                     <p class="form-text"><a href="#" id="forgotpw" class="text-reset">Unohtuiko salasana?</a></p>
                 </div>
-                <div class="col-6 m-0">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Muista minut
-                        </label>
-                    </div>
-                </div>
                 <hr>
                 <button type="submit" value="submit" name="submit" class="btn btn-success w-100">Kirjaudu</button>
             </form>
