@@ -94,10 +94,16 @@
  * Allow employer only remove their own employees workdays
  * Allow admin to remove anything
  * api/jsonApi.php?mode=workday&action=remove&id=1
+ * ----------------------------SETTINGS ACTIONS-------------------------------
+ * View all user settings from user id:
+ * Only user in question should be allowed to see their own settings
+ * Deny other access expect admin
+ * api/jsonApi.php?mode=settings&action=viewall&userid=1
  */
 include_once __DIR__ . "/../collection/userCollection.php";
 include_once __DIR__ . "/../collection/companyCollection.php";
 include_once __DIR__ . "/../collection/workdayCollection.php";
+include_once __DIR__ . "/../collection/settingsCollection.php";
 
 if (isset($_GET["mode"]) && !empty(trim($_GET["mode"]))) {
     if ($_GET["mode"] == "user") {
@@ -165,6 +171,17 @@ if (isset($_GET["mode"]) && !empty(trim($_GET["mode"]))) {
                 echo removeWorkday($_GET["id"]);
                 break;
         }
+    } else if ($_GET["mode"] == "settings") {
+        switch($_GET["action"]) {
+            case "viewall":
+                if (!empty($_GET["userid"])) {
+                    echo getAllUserSettingsAsJson($_GET["userid"]);
+                    break;
+                } else {
+                    echo getAllUserSettingsAsJson($_SESSION["id"]);
+                    break;
+                }
+        }
     }
 }
 
@@ -175,6 +192,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             break;
         case "updateuser":
             echo updateUser();
+            break;
+        case "usersettings":
+            echo userSettings();
             break;
         case "createcompany":
             echo createCompany();
@@ -491,6 +511,71 @@ function removeUser($id) {
     } else if ($_SESSION["class"] == "admin") {
         if ($userWhoIsBeingRemovedObject->removeInstance()) {
             echo json_encode(array("message" => "Käyttäjä poistettu onnistuneesti."), JSON_UNESCAPED_UNICODE);
+        }
+    }
+}
+
+/**
+ * User settings
+ */
+
+function getAllUserSettingsAsJson($id) {
+    if (!is_numeric($id)) {
+        return json_encode(array("error" => "Syötetty ID ei ole numero."), JSON_UNESCAPED_UNICODE);
+    }
+
+    if ($_SESSION["class"] == "employee" || $_SESSION["class"] == "employer") {
+        if ($_SESSION["id"] != $id) {
+            return json_encode(array("error" => "Voit katsoa vain omia asetuksia."), JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+    $collection = SettingsCollection::getAllUserSettings($id);
+    return $collection->getJson();
+}
+
+function userSettings() {
+    // Get user id from session
+    $userid = $_SESSION["id"];
+
+    $startstr = "autostarttime";
+    $startinput = trim($_POST["autostarttime"]);
+    checkStringSettings($userid,$startstr,$startinput);
+    $endstr = "autoendtime";
+    $endinput = trim($_POST["autoendtime"]);
+    checkStringSettings($userid,$endstr,$endinput);
+    $breakstr = "autobreaktime";
+    $breakinput = trim($_POST["autobreaktime"]);
+    checkStringSettings($userid,$breakstr,$breakinput);
+
+    return json_encode(array("message" => "Asetukset päivitetty"), JSON_UNESCAPED_UNICODE);
+}
+
+function checkStringSettings($userid, $settingname, $settingvalue) {
+    $settingsObject = Settings::withUserIdAndName($userid, $settingname);
+    
+    // Check if there is any previous settings
+    if (!empty($settingsObject->error)) {
+        $newSettingsObject = new Settings(null,$userid, $settingname, null, null, $settingvalue);
+        // If not create new entry
+        if ($newSettingsObject->createInstancetoDB()) {
+            return json_encode($newSettingsObject, JSON_UNESCAPED_UNICODE);
+        } else {
+            return json_encode(array("error" => "Asetusten tallentaminen epäonnistui"), JSON_UNESCAPED_UNICODE);
+        }
+    }
+    // Else update old entry if data is changed
+    if ($settingvalue != $settingsObject->value_str) {
+        if (empty($settingvalue)) {
+            $settingsObject->value_str = null;
+        } else {
+            $settingsObject->value_str = $settingvalue;
+        }
+        
+        if ($settingsObject->updateInstanceToDB()) {
+            return json_encode($settingsObject, JSON_UNESCAPED_UNICODE);
+        } else {
+            return json_encode(array("error" => "Asetusten tallentaminen epäonnistui"), JSON_UNESCAPED_UNICODE);
         }
     }
 }

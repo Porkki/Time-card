@@ -47,7 +47,7 @@ date_default_timezone_set('Europe/Helsinki');
                         </div>
                         <div class="col-md-4">
                             <label for="break">Tauko</label>
-                            <input type="time" class="form-control" name="breaktime">
+                            <input type="time" class="form-control" name="breaktime" id="breaktime">
                         </div>
                         <div class="col-12">
                             <label for="explanation">Selite</label>

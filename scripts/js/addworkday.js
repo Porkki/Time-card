@@ -1,4 +1,25 @@
 $(document).ready(function() {
+    
+    // Fill form from settings
+    $.get("api/jsonApi.php?mode=settings&action=viewall", function(data) {
+        let date = $("#date").val();
+        $.each(data, function(key, value) {
+            switch (value.name) {
+                case "autostarttime":
+                    $("#starttime").val(date + "T" + value.value_str);
+                    break;
+                case "autoendtime":
+                    $("#endtime").val(date + "T" + value.value_str);
+                    break;
+                case "autobreaktime":
+                    $("#breaktime").val(value.value_str)
+                    break;
+            }
+
+            //document.getElementsByName(value.name)[0].value = value.value_str;
+        })
+    }, "json")
+
     // Modify startdate & enddate according to date input so it automatically enter same date on both fields but keeps time
     $("#date").change(function() {
         var date = $("#date").val();

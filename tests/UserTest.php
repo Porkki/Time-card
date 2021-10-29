@@ -28,6 +28,20 @@ final class UserTest extends TestCase {
         $this->assertEquals("Syötetyllä ID:llä ei löydy käyttäjää.", $this->user->error);
     }
 
+    public function testLoadNewUserObjectByIdWithPassword() {
+        $this->user = User::withIDLoadPassword(22);
+        $this->assertEquals("AlustusKäyttäjätunnus", $this->user->username);
+        $this->assertEquals("AlustusLuokka", $this->user->class);
+        $this->assertEquals("AlustusEtunimi", $this->user->firstname);
+        $this->assertEquals("AlustusSukunimi", $this->user->lastname);
+        $this->assertTrue($this->user->checkPassword("salasana"));
+    }
+
+    public function testLoadNewUserObjectByFalseIdWithPassword() {
+        $this->user = User::withIDLoadPassword(0);
+        $this->assertEquals("Syötetyllä ID:llä ei löydy käyttäjää.", $this->user->error);
+    }
+
     public function testLoadNewUserObjectByUsernameAndPassword() {
         $this->user = User::withUsernameAndPassword("Alustuskäyttäjätunnus", "salasana");
         $this->assertEquals("AlustusKäyttäjätunnus", $this->user->username);
