@@ -40,21 +40,24 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         </div>
                     </div>
                     
-                    <table id="workdays" class="table table-striped table-hover w-100 table-responsive">
-                        <thead>
-                            <tr>
-                                <th scope="col">Päivämäärä</th>
-                                <th scope="col">Aika</th>
-                                <th scope="col">Yhteensä</th>
-                                <th scope="col">Selite</th>
-                                <th scope="col">Toiminto</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    <div class="table-responsive">
+                        <table id="workdays" class="table table-striped table-hover w-100 table-responsive">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Päivämäärä</th>
+                                    <th scope="col">Aika</th>
+                                    <th scope="col">Yhteensä</th>
+                                    <th scope="col">Selite</th>
+                                    <th scope="col">Toiminto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                        </tbody>
-                    </table>
-                    <p>Tunnit valitulla aikavälillä yhteensä: <span id="hours">0</span>.</p>
+                            </tbody>
+                        </table>
+                        <p>Tunnit valitulla aikavälillä yhteensä: <span id="hours">0</span>.</p>
+                    </div>
+                    
                 </div>
             </div>
         </div>
