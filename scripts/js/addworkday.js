@@ -4,16 +4,18 @@ $(document).ready(function() {
     $.get("api/jsonApi.php?mode=settings&action=viewall", function(data) {
         let date = $("#date").val();
         $.each(data, function(key, value) {
-            switch (value.name) {
-                case "autostarttime":
-                    $("#starttime").val(date + "T" + value.value_str);
-                    break;
-                case "autoendtime":
-                    $("#endtime").val(date + "T" + value.value_str);
-                    break;
-                case "autobreaktime":
-                    $("#breaktime").val(value.value_str)
-                    break;
+            if (value.value_str != null) {
+                switch (value.name) {
+                    case "autostarttime":
+                        $("#starttime").val(date + "T" + value.value_str);
+                        break;
+                    case "autoendtime":
+                        $("#endtime").val(date + "T" + value.value_str);
+                        break;
+                    case "autobreaktime":
+                        $("#breaktime").val(value.value_str)
+                        break;
+                }
             }
 
             //document.getElementsByName(value.name)[0].value = value.value_str;
