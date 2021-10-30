@@ -20,12 +20,22 @@ $(document).ready(function() {
     var id = search_params.get("id");
     // Send get request to script and then assign values to the form
     $.get("api/jsonApi.php?mode=user&action=view&id=" + id, function(data) {
-        document.getElementsByName("firstname")[0].value = data.firstname;
-        document.getElementsByName("lastname")[0].value = data.lastname;
-        document.getElementsByName("username")[0].value = data.username;
-        document.getElementsByName("class")[0].value = data.class;
-        document.getElementsByName("user_company_id")[0].value = data.user_company_id;
-        document.getElementsByName("id")[0].value = data.id;
+        if (!data.error) {
+            $("#firstname").val(data.firstname);
+            $("#lastname").val(data.lastname);
+            $("#username").val(data.username);
+            $("#class").val(data.class);
+            $("#user_company_id").val(data.user_company_id);
+            $("#id").val(data.id);
+        } else {
+            $("#errormessage").text(data.error);
+            $('#unsuccessfulModal').modal('show');
+            $("#unsuccessfulModal").on("hidden.bs.modal", function (e) {
+                // Send user back to front page if id is wrong
+                window.location.href= "modifyuser.php";
+            });
+        }
+        
     }, "json");
 
     // Form handling
@@ -51,7 +61,7 @@ $(document).ready(function() {
                     }, 2000);
                 } 
                 if (error) {
-                    document.getElementById("errormessage").textContent=error;
+                    $("#errormessage").text(error);
                     $('#unsuccessfulModal').modal('show');
                 }
             })
