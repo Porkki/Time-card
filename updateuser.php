@@ -26,7 +26,7 @@
                     <form id="target" class="row g-3">
                         <div class="col-md-6">
                             <label for="class"><b>Käyttäjäluokka</b></label>
-                            <select class=form-select name="class" required>
+                            <select class=form-select id="class" name="class" required>
                                 <?php if ($_SESSION["class"] == "admin") { ?>
                                 <option value="admin">Ylläpitäjä</option>
                                 <?php } ?>
@@ -42,21 +42,21 @@
 
                         <div class="col-md-6">
                             <label for="firstname"><b>Etunimi</b></label>
-                            <input type="text" class="form-control" name="firstname" required>
+                            <input type="text" class="form-control" id="firstname" name="firstname" required>
                         </div>
                         <div class="col-md-6">
                             <label for="lastname"><b>Sukunimi</b></label>
-                            <input type="text" class="form-control" name="lastname" required>
+                            <input type="text" class="form-control" id="lastname" name="lastname" required>
                         </div>
 
                         <div class="col-md-6">
                             <label for="username"><b>Käyttäjätunnus</b></label>
-                            <input type="text" class="form-control" name="username" required>
+                            <input type="text" class="form-control" id="username" name="username" required>
                         </div>
                         <div class="col-md-6">
                             <label for="password"><b>Salasana</b></label>
-                            <input type="password" class="form-control" name="password" placeholder="Salasana">
-                            <input type="hidden" class="form-control" name="id">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Salasana">
+                            <input type="hidden" class="form-control" id="id" name="id">
                             <input type="hidden" class="form-control" name="postfrom" value="updateuser">
                         </div>
                         <div class="col-12">
@@ -66,7 +66,7 @@
                         
                     </form>
                     <hr>
-                    <p><b>Huom!</b> jos muutat salasana kenttää niin tällöin myös muuttuu käyttäjän salasana. Jätä kenttä tyhjäksi jos et halua muuttaa käyttäjän salasanaa.</p>
+                    <p><b>Huom!</b> Jos muutat salasana kenttää niin tällöin myös muuttuu käyttäjän salasana. Jätä kenttä tyhjäksi jos et halua muuttaa käyttäjän salasanaa.</p>
                     <!-- Start of user action modals -->
                     <div class="modal fade" id="doneModal" tabindex="-1"  >
                         <div class="modal-dialog" role="document">
@@ -96,7 +96,6 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    Käyttäjän päivitys epäonnistui.<br>
                                     <span id="errormessage"></span>
                                 </div>
                                 <div class="modal-footer">
