@@ -40,6 +40,7 @@ date_default_timezone_set('Europe/Helsinki');
                         <div class="col-md-4">
                             <label for="starttime">Aloitusaika</label>
                             <input type="datetime-local" class="form-control" name="starttime" id="starttime" value="<?php echo date("Y-m-d") . "T00:00"; ?>">
+                            <div id="timeHelp" class="form-text">Voit asettaa ajan valmiiksi syötön <a href="usersettings.php" class="link-secondary">asetuksista</a></div>
                         </div>
                         <div class="col-md-4">
                             <label for="endtime">Lopetusaika</label>
