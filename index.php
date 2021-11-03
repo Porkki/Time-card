@@ -21,13 +21,13 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
             <img src="img/logo.png" class="mx-auto img-fluid d-block">
             <h1 class="text-center">Työajanseuranta</h1>
             <form id="login" class="row g-3" method="POST">
-                <div class="col-12">
-                    <label for="uname"><b>Käyttäjätunnus</b></label>
+                <div class="form-floating col-12">
                     <input type="text" class="form-control" placeholder="Syötä käyttäjätunnus" name="username" required>
+                    <label for="username">Käyttäjätunnus</label>
                 </div>
-                <div class="col-12">
-                    <label for="psw"><b>Salasana</b></label>
+                <div class="form-floating col-12">
                     <input type="password" class="form-control" placeholder="Syötä salasana" name="password" required>
+                    <label for="password">Salasana</label>
                 </div>
                 <div class="col-6 m-0">
                     <p class="form-text"><a href="#" id="forgotpw" class="text-reset">Unohtuiko salasana?</a></p>
