@@ -55,7 +55,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
                             </tbody>
                         </table>
-                        <p>Tunnit valitulla aikavälillä yhteensä: <span id="hours">0</span>.</p>
+                        <p>Tunnit valitulla aikavälillä yhteensä: <span id="hours">0</span>.<br>
+                            Lauantai tunnit yhteensä: <span id="sathours">0</span>.<br>
+                            Sunnuntai tunnit yhteensä: <span id="sunhours">0</span>.</p>
                     </div>
                     
                 </div>

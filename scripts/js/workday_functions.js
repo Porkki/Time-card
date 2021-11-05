@@ -30,17 +30,37 @@ export function filterTable() {
     }).hide();
 
     // Calculate total hours
-    var hours = 0;
-    var mins = 0;
     var seconds = 0;
     $("#workdays > tbody tr:visible").each(function() {
-        var totalTimeContent = $(this).find("#totalTime").text();
+        let totalTimeContent = $(this).find("#totalTime").text();
 
-        var totalTimeArray = totalTimeContent.split(":")
+        let totalTimeArray = totalTimeContent.split(":")
         seconds += parseInt(totalTimeArray[0])*60*60;
         seconds += parseInt(totalTimeArray[1])*60;
     });
     $("#hours").text(secondsToHms(seconds));
+
+    // Calculate saturday hours
+    var satseconds = 0;
+    $("#workdays > tbody tr:visible td:first-child:contains('Lauantai')").parent().each(function() {
+        let totalTimeContent = $(this).find("#totalTime").text();
+
+        let totalTimeArray = totalTimeContent.split(":")
+        satseconds += parseInt(totalTimeArray[0])*60*60;
+        satseconds += parseInt(totalTimeArray[1])*60;
+    });
+    $("#sathours").text(secondsToHms(satseconds));
+
+    // Calculate sunday hours
+    var sunseconds = 0;
+    $("#workdays > tbody tr:visible td:first-child:contains('Sunnuntai')").parent().each(function() {
+        let totalTimeContent = $(this).find("#totalTime").text();
+
+        let totalTimeArray = totalTimeContent.split(":")
+        sunseconds += parseInt(totalTimeArray[0])*60*60;
+        sunseconds += parseInt(totalTimeArray[1])*60;
+    });
+    $("#sunhours").text(secondsToHms(sunseconds));
 }
 /**
  * Returns Hours Minutes and Seconds
