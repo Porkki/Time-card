@@ -33,25 +33,26 @@ date_default_timezone_set('Europe/Helsinki');
                     <h1>Muokkaa työpäivää</h1>
                     <hr>
                     <form id="modifyworkday" class="row g-3">
-                        <div class="col-12">
-                            <label for="date">Päivämäärä</label>
+                    <div class="form-floating col-12">
                             <input type="date" class="form-control" name="date" id="date" value="<?php echo date("Y-m-d"); ?>">
+                            <label for="date">Päivämäärä</label>
                         </div>
-                        <div class="col-md-4">
-                            <label for="starttime">Aloitusaika</label>
+                        <div class="form-floating col-md-4">
                             <input type="datetime-local" class="form-control" name="starttime" id="starttime" value="<?php echo date("Y-m-d") . "T00:00"; ?>">
+                            <label for="starttime">Aloitusaika</label>
+                            <div id="timeHelp" class="form-text">Voit asettaa ajan valmiiksi syötön <a href="usersettings.php" class="link-secondary">asetuksista</a></div>
                         </div>
-                        <div class="col-md-4">
-                            <label for="endtime">Lopetusaika</label>
+                        <div class="form-floating col-md-4">
                             <input type="datetime-local" class="form-control" name="endtime" id="endtime" value="<?php echo date("Y-m-d\TH:i"); ?>">
+                            <label for="endtime">Lopetusaika</label>
                         </div>
-                        <div class="col-md-4">
+                        <div class="form-floating col-md-4">
+                            <input type="time" class="form-control" name="breaktime" id="breaktime">
                             <label for="break">Tauko</label>
-                            <input type="time" class="form-control" name="breaktime">
                         </div>
-                        <div class="col-12">
-                            <label for="explanation">Selite</label>
+                        <div class="form-floating col-12">
                             <textarea class="form-control" name="explanation" rows="3" maxlength="250" aria-describedby="explanationHelpBlock"></textarea>
+                            <label for="explanation">Selite</label>
                             <small id="explanationHelpBlock" class="form-text text-muted">
                             Max 250 kirjainta.
                             </small>

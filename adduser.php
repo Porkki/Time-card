@@ -24,8 +24,7 @@
                     <h1>Luo käyttäjä</h1>
                     <hr>
                     <form id="target" class="row g-3">
-                        <div class="col-md-6">
-                            <label for="class"><b>Käyttäjäluokka</b></label>
+                        <div class="form-floating col-md-6">
                             <select class=form-select name="class" required>
                                 <?php if ($_SESSION["class"] == "admin") { ?>
                                 <option value="admin">Ylläpitäjä</option>
@@ -33,29 +32,30 @@
                                 <option value="employer">Työnantaja</option>
                                 <option value="employee" selected>Työntekijä</option>
                             </select>
+                            <label for="class">Käyttäjäluokka</label>
                         </div>
-                        <div class="col-md-6">
-                            <label for="user_company_id"><b>Yritys</b></label>
+                        <div class="form-floating col-md-6">
                             <select class="form-select" id="user_company_id" name="user_company_id" required>
                             </select>
+                            <label for="user_company_id">Yritys</label>
                         </div>
 
-                        <div class="col-md-6">
-                            <label for="firstname"><b>Etunimi</b></label>
+                        <div class="form-floating col-md-6">
                             <input type="text" class="form-control" name="firstname" placeholder="Matti" required>
+                            <label for="firstname">Etunimi</label>
                         </div>
-                        <div class="col-md-6">
-                            <label for="lastname"><b>Sukunimi</b></label>
+                        <div class="form-floating col-md-6">
                             <input type="text" class="form-control" name="lastname" placeholder="Meikäläinen" required>
+                            <label for="lastname">Sukunimi</label>
                         </div>
 
-                        <div class="col-md-6">
-                            <label for="username"><b>Käyttäjätunnus</b></label>
+                        <div class="form-floating col-md-6">
                             <input type="text" class="form-control" name="username" placeholder="matti.meikalainen" required>
+                            <label for="username">Käyttäjätunnus</label>
                         </div>
-                        <div class="col-md-6">
-                            <label for="password"><b>Salasana</b></label>
+                        <div class="form-floating col-md-6">
                             <input type="password" class="form-control" name="password" placeholder="Salasana" required>
+                            <label for="password">Salasana</label>
                             <input type="hidden" class="form-control" name="postfrom" value="createuser">
                         </div>
                         <div class="col-12">
