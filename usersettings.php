@@ -39,6 +39,22 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                             <label for="autobreak">Tauko</label>
                             <input type="time" class="form-control" name="autobreaktime">
                         </div>
+
+                        <div class="col-12">
+                            <h2>Ylitöiden päiväkohtainen aikanäyttö katsele työpäiviä sivulla <a class="fs-6 link-secondary" href="#" data-bs-toggle="modal" data-bs-target="#overtimeinfoModal"><i class="far fa-question-circle"></i></a></h2>
+                        </div>
+                        <div class="col-6">
+                            <label for="showdailyovertime"> </label>
+                            <select class="form-select" name="showdailyovertime" id="showdailyovertime">
+                            <option value="1">Käytössä</option>
+                            <option value="0">Pois käytöstä</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label for="dailyovertimelimit">Ylityöraja</label>
+                            <input type="time" class="form-control" id="dailyovertimelimit" name="dailyovertimelimit">
+                        </div>
+
                         <div class="col-12">
                             <input type="hidden" class="form-control" name="postfrom" value="usersettings">
                             <button id="cancel" class="btn btn-secondary">Peruuta</button>
@@ -82,6 +98,25 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="overtimeinfoModal" tabindex="-1"  >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="overtimeinfoModalLabel">Lisätietoja</h5>
+                        <button type="button"  class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Kuva tähän<br>
+                        Näyttää ylityön määrän päiväkohtaisesti jokaisen työpäivän kohdalla hh:min muodossa
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Ok</button>
                     </div>
                 </div>
             </div>

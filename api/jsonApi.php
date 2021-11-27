@@ -548,7 +548,45 @@ function userSettings() {
     $breakinput = trim($_POST["autobreaktime"]);
     checkStringSettings($userid,$breakstr,$breakinput);
 
+    //Overtime part
+    $otenabledstr = "showdailyovertime";
+    $otenabledforminput = trim($_POST["showdailyovertime"]);
+    if ($otenabledforminput == "1") {
+        $otenabledinput = 1;
+    } else if ($otenabledforminput == "0") {
+        $otenabledinput = 0;
+    }
+    checkBoolSettings($userid,$otenabledstr,$otenabledinput);
+    $ottimelimitstr = "dailyovertimelimit";
+    $ottimelimitinput = trim($_POST["dailyovertimelimit"]);
+    checkStringSettings($userid,$ottimelimitstr,$ottimelimitinput);
+
     return json_encode(array("message" => "Asetukset päivitetty"), JSON_UNESCAPED_UNICODE);
+}
+
+function checkBoolSettings($userid, $settingname, $settingvalue) {
+    $settingsObject = Settings::withUserIdAndName($userid, $settingname);
+
+    // Check if there is any previous settings
+    if (!empty($settingsObject->error)) {
+        $newSettingsObject = new Settings(null,$userid,$settingname,$settingvalue,null,null);
+        // If not create new entry
+        if ($newSettingsObject->createInstancetoDB()) {
+            return json_encode($newSettingsObject, JSON_UNESCAPED_UNICODE);
+        } else {
+            return json_encode(array("error" => "Asetusten tallentaminen epäonnistui"), JSON_UNESCAPED_UNICODE);
+        }
+    }
+    // Else update old entry if data is changed
+    if ($settingvalue != $settingsObject->value_bool) {
+        $settingsObject->value_bool = $settingvalue;
+        
+        if ($settingsObject->updateInstanceToDB()) {
+            return json_encode($settingsObject, JSON_UNESCAPED_UNICODE);
+        } else {
+            return json_encode(array("error" => "Asetusten tallentaminen epäonnistui"), JSON_UNESCAPED_UNICODE);
+        }
+    }
 }
 
 function checkStringSettings($userid, $settingname, $settingvalue) {

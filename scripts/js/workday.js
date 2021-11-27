@@ -15,7 +15,8 @@ $(document).ready(function() {
 
             let timeString = ("<b>Aloitus: </b>" + value.custom_start_time + "<br>" +
                             "<b>Lopetus: </b>" + value.custom_end_time +
-                            "<span class='breakTime'><br><b>Tauko: </b><span class='breakTimeValue'>" + value.break + "</span></span>");
+                            "<span class='breakTime'><br><b>Tauko: </b><span class='breakTimeValue'>" + value.break + "</span></span><br>" + 
+                            "<span class='overTime'><b>Ylityö: </b><span id='overTimeValue' class='overTimeValue'>0:00</span></span>");
             let dateString = ("<b>" + weekdayLongFormat[d.getDay()] + "</b><br>" + value.custom_date);
             table.append($("<tr>")
                 // Set id value to original date value for table sorting between dates

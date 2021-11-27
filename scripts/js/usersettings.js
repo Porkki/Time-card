@@ -3,7 +3,16 @@ $(document).ready(function() {
     // Fill form
     $.get("api/jsonApi.php?mode=settings&action=viewall", function(data) {
         $.each(data, function(key, value) {
-            document.getElementsByName(value.name)[0].value = value.value_str;
+            if (value.name == "showdailyovertime") {
+                document.getElementsByName(value.name)[0].value = value.value_bool;
+                if (value.value_bool == 0) {
+                    $("#dailyovertimelimit").prop("disabled", true);
+                } else if (value.value_bool == 1) {
+                    $("#dailyovertimelimit").prop("disabled", false);
+                }
+            } else {
+                document.getElementsByName(value.name)[0].value = value.value_str;
+            }
         })
     }, "json")
 
@@ -32,5 +41,13 @@ $(document).ready(function() {
 
     $("#cancel").click(function() {
         history.back();
+    });
+
+    $("#showdailyovertime").change(function() {
+        if ($(this).val() == 0) {
+            $("#dailyovertimelimit").prop("disabled", true);
+        } else if ($(this).val() == 1) {
+            $("#dailyovertimelimit").prop("disabled", false);
+        }
     });
 });
